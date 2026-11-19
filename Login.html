@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartPage Global — Login & AI Avatar Studio</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #1e293b;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px;
+  }
+  .auth-card {
+    width: 100%;
+    max-width: 880px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+  }
+  @media (max-width: 768px) {
+    .auth-card { grid-template-columns: 1fr; }
+  }
+  .left-panel {
+    background: #f8fafc;
+    padding: 26px;
+    border-right: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .brand-badge {
+    display: inline-block;
+    background: #0f172a;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.6px;
+    margin-bottom: 10px;
+  }
+  .left-panel h1 {
+    font-size: 22px;
+    color: #0f172a;
+    margin-bottom: 8px;
+    line-height: 1.25;
+  }
+  .left-panel p {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.5;
+    margin-bottom: 18px;
+  }
+  .form-group { margin-bottom: 13px; }
+  .form-group label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 5px;
+  }
+  .form-group input, .form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+  }
+  .right-panel {
+    padding: 26px;
+    background: #ffffff;
+  }
+  .studio-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 4px;
+  }
+  .studio-sub {
+    font-size: 12.5px;
+    color: #64748b;
+    margin-bottom: 16px;
+  }
+  .ai-box {
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 13px;
+    margin-bottom: 13px;
+  }
+  .avatar-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .avatar-preview {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #0f172a;
+    background: #e2e8f0;
+    flex-shrink: 0;
+  }
+  .btn-small {
+    background: #0f172a;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-rec {
+    background: #dc2626;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-rec.recording {
+    background: #16a34a;
+    animation: pulse 1s infinite;
+  }
+  @keyframes pulse {
+    0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; }
+  }
+  .consent-script {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    font-size: 11.5px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    margin: 7px 0;
+    font-style: italic;
+  }
+  .plan-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 15px;
+  }
+  .plan-option {
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    text-align: center;
+  }
+  .plan-option.selected {
+    border-color: #16a34a;
+    background: #f0fdf4;
+  }
+  .btn-launch {
+    width: 100%;
+    background: #16a34a;
+    color: #ffffff;
+    border: none;
+    padding: 13px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-launch:hover { background: #15803d; }
+</style>
+</head>
+<body>
+
+<div class="auth-card">
+  <div class="left-panel">
+    <div>
+      <span class="brand-badge">SMARTPAGE • OMF GLOBAL ACADEMY</span>
+      <h1>One Library. Every Skill. Your Own Voice & Avatar.</h1>
+      <p>Sign in once to access Spoken English, Technical Courses, Academic Books, Novels & Shayari with AI Voice Cloning and Personal Avatar Teaching.</p>
+
+      <div class="form-group">
+        <label>Full Name (Printed on Certificate):</label>
+        <input type="text" id="userName" placeholder="e.g., Mohamed Azghar">
+      </div>
+
+      <div class="form-group">
+        <label>Email or WhatsApp Number:</label>
+        <input type="text" id="userContact" placeholder="e.g., +966 57XXXXXXX / email@domain.com">
+      </div>
+
+      <div class="form-group">
+        <label>Region & Currency Tier:</label>
+        <select id="userRegion" onchange="updatePlanPricing()">
+          <option value="GCC">🇸🇦 Saudi Arabia / UAE / GCC (SAR)</option>
+          <option value="EU">🇪🇺 Europe / UK / Global (EUR €)</option>
+          <option value="ASIA">🇮🇳 India / Asia (INR ₹)</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="font-size:11.5px; color:#64748b; border-top:1px solid #e2e8f0; padding-top:10px;">
+      ✓ First 2 Pages FREE with Personal AI Avatar & Voice Clone
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="studio-title">🧬 Personal AI Avatar & Voice Studio</div>
+    <div class="studio-sub">Upload your photo & 15s voice sample so any book or lesson speaks in your own voice.</div>
+
+    <div class="ai-box">
+      <div style="font-size:12.5px; font-weight:700; color:#0f172a; margin-bottom:8px;">1. Your Teaching Avatar Photo</div>
+      <div class="avatar-row">
+        <img id="avatarPreview" class="avatar-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='38' r='20' fill='%2394a3b8'/%3E%3Cpath d='M18 88c0-18 14-30 32-30s32 12 32 30' fill='%2394a3b8'/%3E%3C/svg%3E" alt="Avatar">
+        <div>
+          <button type="button" class="btn-small" onclick="document.getElementById('avatarInput').click()">📷 Upload Selfie / Photo</button>
+          <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
+          <div id="avatarStatus" style="font-size:11.5px; color:#64748b; margin-top:5px;">Clear front-facing photo recommended</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ai-box">
+      <div style="font-size:12.5px; font-weight:700; color:#0f172a; margin-bottom:4px;">2. Your 15-Second Voice Clone Sample</div>
+      <div class="consent-script">"I authorize SmartPage Global Academy to use my voice profile for my personal learning lessons."</div>
+      <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+        <button type="button" class="btn-rec" id="recordBtn" onclick="toggleVoiceRecording()">🎙️ Record 15s Sample</button>
+        <button type="button" class="btn-small" style="background:#475569;" onclick="document.getElementById('voiceFileInput').click()">📁 Upload Audio</button>
+        <input type="file" id="voiceFileInput" accept="audio/*" style="display:none" onchange="handleVoiceFileUpload(event)">
+      </div>
+      <audio id="voicePlayback" controls style="display:none; width:100%; height:32px; margin-top:8px;"></audio>
+      <div id="voiceStatus" style="font-size:11.5px; color:#16a34a; font-weight:600; margin-top:5px;"></div>
+    </div>
+
+    <div style="font-size:12.5px; font-weight:700; color:#0f172a; margin-bottom:6px;">3. Default Classroom Mode:</div>
+    <div class="plan-toggle">
+      <div class="plan-option selected" id="planOmf" onclick="selectPlan('omf')">
+        <div style="font-size:13px; font-weight:700; color:#0f172a;">🎓 OMF Teacher Mode</div>
+        <div id="priceOmf" style="font-size:11.5px; color:#16a34a; font-weight:600;">SAR 49 / Course</div>
+      </div>
+      <div class="plan-option" id="planAi" onclick="selectPlan('ai')">
+        <div style="font-size:13px; font-weight:700; color:#0f172a;">✨ My AI Avatar Pro</div>
+        <div id="priceAi" style="font-size:11.5px; color:#0f172a; font-weight:600;">SAR 149 (2 Pages Free)</div>
+      </div>
+    </div>
+
+    <button type="button" class="btn-launch" onclick="saveProfileAndEnter()">📚 Save & Open Book Library →</button>
+  </div>
+</div>
+
+<script>
+  let userAvatarData = "";
+  let userVoiceData = "";
+  let selectedPlan = "omf";
+  let mediaRecorder = null;
+  let audioChunks = [];
+  let isRecording = false;
+
+  window.onload = function() {
+    try {
+      const saved = JSON.parse(localStorage.getItem("smartpage_user_profile") || "null");
+      if (saved) {
+        document.getElementById("userName").value = saved.name || "";
+        document.getElementById("userContact").value = saved.contact || "";
+        document.getElementById("userRegion").value = saved.region || "GCC";
+        updatePlanPricing();
+        if (saved.avatar) {
+          userAvatarData = saved.avatar;
+          document.getElementById("avatarPreview").src = saved.avatar;
+          document.getElementById("avatarStatus").innerText = "✓ Avatar Photo Saved";
+        }
+        if (saved.voiceSample) {
+          userVoiceData = saved.voiceSample;
+          const player = document.getElementById("voicePlayback");
+          player.src = saved.voiceSample;
+          player.style.display = "block";
+          document.getElementById("voiceStatus").innerText = "✓ Personal Voice Profile Active";
+        }
+        if (saved.plan) selectPlan(saved.plan);
+      }
+    } catch (e) {}
+  };
+
+  function updatePlanPricing() {
+    const region = document.getElementById("userRegion").value;
+    if (region === "GCC") {
+      document.getElementById("priceOmf").innerText = "SAR 49 / Course";
+      document.getElementById("priceAi").innerText = "SAR 149 (2 Pages Free)";
+    } else if (region === "EU") {
+      document.getElementById("priceOmf").innerText = "€15 / Course";
+      document.getElementById("priceAi").innerText = "€45 (2 Pages Free)";
+    } else {
+      document.getElementById("priceOmf").innerText = "₹299 / Course";
+      document.getElementById("priceAi").innerText = "₹1,499 (2 Pages Free)";
+    }
+  }
+
+  function selectPlan(plan) {
+    selectedPlan = plan;
+    document.getElementById("planOmf").classList.toggle("selected", plan === "omf");
+    document.getElementById("planAi").classList.toggle("selected", plan === "ai");
+  }
+
+  function handleAvatarUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      userAvatarData = e.target.result;
+      document.getElementById("avatarPreview").src = userAvatarData;
+      document.getElementById("avatarStatus").innerText = "✓ Photo Ready for AI Avatar";
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function handleVoiceFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      userVoiceData = e.target.result;
+      const player = document.getElementById("voicePlayback");
+      player.src = userVoiceData;
+      player.style.display = "block";
+      document.getElementById("voiceStatus").innerText = `✓ Voice Sample Loaded (${file.name})`;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function toggleVoiceRecording() {
+    const btn = document.getElementById("recordBtn");
+    if (!isRecording) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(audioChunks, { type: "audio/webm" });
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            userVoiceData = e.target.result;
+            const player = document.getElementById("voicePlayback");
+            player.src = userVoiceData;
+            player.style.display = "block";
+            document.getElementById("voiceStatus").innerText = "✓ Voice Recorded & Ready for AI Cloning";
+          };
+          reader.readAsDataURL(blob);
+          stream.getTracks().forEach(t => t.stop());
+        };
+        mediaRecorder.start();
+        isRecording = true;
+        btn.classList.add("recording");
+        btn.innerText = "⏹ Stop Recording";
+      } catch (err) {
+        alert("Microphone access denied or unavailable. You can upload an audio file instead.");
+      }
+    } else {
+      mediaRecorder.stop();
+      isRecording = false;
+      btn.classList.remove("recording");
+      btn.innerText = "🎙️ Re-record Sample";
+    }
+  }
+
+  function saveProfileAndEnter() {
+    const name = document.getElementById("userName").value.trim() || "Learner";
+    const contact = document.getElementById("userContact").value.trim();
+    const region = document.getElementById("userRegion").value;
+
+    const profile = {
+      name,
+      contact,
+      region,
+      plan: selectedPlan,
+      avatar: userAvatarData,
+      voiceSample: userVoiceData
+    };
+
+    try {
+      localStorage.setItem("smartpage_user_profile", JSON.stringify(profile));
+    } catch (e) {
+      profile.avatar = "";
+      profile.voiceSample = "";
+      localStorage.setItem("smartpage_user_profile", JSON.stringify(profile));
+    }
+
+    window.location.href = "Library.html";
+  }
+</script>
+</body>
+</html>

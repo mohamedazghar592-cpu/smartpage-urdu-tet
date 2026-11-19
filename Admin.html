@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartPage Admin Studio — OMF Visual Book Publisher</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #eef2f6;
+    color: #0f172a;
+    padding: 16px;
+  }
+  .topbar {
+    max-width: 1020px;
+    margin: 0 auto 18px auto;
+    background: #0f172a;
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  .topbar h1 { font-size: 18px; display: flex; align-items: center; gap: 8px; }
+  .badge { background: #16a34a; color: #fff; font-size: 11px; padding: 3px 8px; border-radius: 4px; }
+  .top-actions { display: flex; gap: 8px; }
+  .btn-top {
+    background: rgba(255,255,255,0.14);
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-top:hover { background: rgba(255,255,255,0.24); }
+
+  .container { max-width: 1020px; margin: 0 auto; }
+
+  /* Dashboard Category Tabs & Book Cards */
+  .cat-bar {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+  }
+  .cat-btn {
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .cat-btn.active { background: #0f172a; color: #fff; border-color: #0f172a; }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .add-card {
+    border: 2px dashed #64748b;
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    min-height: 210px;
+  }
+  .add-card:hover { border-color: #0f172a; background: #f1f5f9; }
+  .book-card {
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(15,23,42,0.05);
+  }
+  .tag-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .cat-tag { font-size: 11px; font-weight: 700; background: #e0f2fe; color: #0369a1; padding: 3px 8px; border-radius: 4px; }
+  .status-pill { font-size: 11px; font-weight: 700; background: #dcfce7; color: #15803d; padding: 3px 8px; border-radius: 4px; }
+  .book-card h3 { font-size: 16px; margin-bottom: 6px; }
+  .book-card p { font-size: 12.5px; color: #475569; margin-bottom: 12px; line-height: 1.4; }
+  .card-btns { display: flex; gap: 8px; margin-top: 10px; }
+  .btn-edit { flex: 1; background: #0f172a; color: #fff; border: none; padding: 9px; border-radius: 7px; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .btn-del { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; padding: 9px 12px; border-radius: 7px; font-size: 13px; font-weight: 700; cursor: pointer; }
+
+  /* Visual Live Page Editor View */
+  .editor-view { display: none; }
+  .meta-card {
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 16px;
+  }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  @media (max-width: 768px) { .meta-grid { grid-template-columns: 1fr; } }
+  .form-group label { display: block; font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 4px; }
+  .form-group input, .form-group select {
+    width: 100%; padding: 9px 11px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13.5px; background: #fff;
+  }
+  .pdf-drop {
+    border: 2px dashed #94a3b8;
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+  }
+  .pdf-drop:hover { border-color: #0f172a; background: #f1f5f9; }
+
+  /* Reader-Style Live Page Canvas */
+  .live-reader-shell {
+    max-width: 820px;
+    margin: 0 auto 18px auto;
+    background: #fcfaf5;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    box-shadow: 0 10px 28px rgba(15,23,42,0.12);
+    padding: 16px 20px;
+  }
+  .live-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1.5px solid #cbd5e1;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #475569;
+  }
+  .live-control-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: #f1f5f9;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    margin-bottom: 14px;
+  }
+  .upload-action-btn {
+    flex: 1 1 180px;
+    border: 1.5px dashed #64748b;
+    background: #ffffff;
+    color: #0f172a;
+    padding: 10px 12px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: 0.15s;
+  }
+  .upload-action-btn:hover { border-color: #0f172a; background: #e2e8f0; }
+  .upload-action-btn.attached {
+    border: 1.5px solid #16a34a;
+    background: #dcfce7;
+    color: #14532d;
+  }
+
+  .media-preview-strip {
+    display: none;
+    background: #0f172a;
+    color: #fff;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    font-size: 12.5px;
+  }
+  .media-preview-strip video { width: 100%; max-height: 260px; border-radius: 6px; margin-top: 8px; background: #000; }
+  .media-preview-strip audio { width: 100%; height: 34px; margin-top: 6px; }
+
+  .live-page-canvas {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    overflow: hidden;
+    min-height: 320px;
+  }
+  .live-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #cbd5e1;
+    padding-top: 12px;
+    margin-top: 14px;
+  }
+  .nav-page-btn {
+    background: #0f172a;
+    color: #fff;
+    border: none;
+    padding: 9px 16px;
+    border-radius: 7px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .nav-page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-approve {
+    width: 100%;
+    max-width: 820px;
+    display: block;
+    margin: 0 auto;
+    background: #16a34a;
+    color: #fff;
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .btn-approve:hover { background: #15803d; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>SmartPage Admin Studio <span class="badge">LIVE VISUAL EDITOR</span></h1>
+  <div class="top-actions">
+    <button type="button" class="btn-top" id="backToDashBtn" style="display:none;" onclick="showDashboard()">‹ All Books Dashboard</button>
+    <button type="button" class="btn-top" style="background:#2563eb;" onclick="exportForVercel()">📦 Export book_data.js</button>
+    <a href="Library.html" class="btn-top" style="background:#16a34a;">📚 Open SmartPage Library →</a>
+  </div>
+</div>
+
+<div class="container">
+  <!-- VIEW 1: ADMIN CATEGORY & BOOK CARDS DASHBOARD -->
+  <div id="dashboardView">
+    <div class="cat-bar">
+      <button class="cat-btn active" onclick="filterAdminBooks('all', this)">All Books & Courses</button>
+      <button class="cat-btn" onclick="filterAdminBooks('academic', this)">🎓 Academic & Exam Prep</button>
+      <button class="cat-btn" onclick="filterAdminBooks('languages', this)">🗣️ Spoken Languages</button>
+      <button class="cat-btn" onclick="filterAdminBooks('skills', this)">🛠️ Technical & AI Skills</button>
+      <button class="cat-btn" onclick="filterAdminBooks('literature', this)">📖 Novels & Shayari</button>
+    </div>
+
+    <div class="cards-grid" id="adminBooksGrid"></div>
+  </div>
+
+  <!-- VIEW 2: VISUAL LIVE PAGE EDITOR (Click buttons directly to upload Video/Audio) -->
+  <div id="editorView" class="editor-view">
+    <div class="meta-card">
+      <div class="meta-grid">
+        <div class="form-group">
+          <label>Book / Exam Title:</label>
+          <input type="text" id="bookTitleInput" placeholder="e.g., TET Exam Preparation Paper 1 Urdu">
+        </div>
+        <div class="form-group">
+          <label>Category:</label>
+          <select id="bookCategoryInput">
+            <option value="academic">🎓 Academic & Exam Prep</option>
+            <option value="languages">🗣️ Spoken Languages</option>
+            <option value="skills">🛠️ Technical & AI Skills</option>
+            <option value="literature">📖 Novels & Shayari</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Book Original Language:</label>
+          <select id="bookLangInput">
+            <option value="ur">🇵🇰/🇮🇳 اردو (Urdu)</option>
+            <option value="en">🌐 English</option>
+            <option value="hi">🇮🇳 हिंदी (Hindi)</option>
+            <option value="ar">🇸🇦 العربية (Arabic)</option>
+            <option value="kn">🇮🇳 ಕನ್ನಡ (Kannada)</option>
+            <option value="ta">🇮🇳 தமிழ் (Tamil)</option>
+            <option value="te">🇮🇳 తెలుగు (Telugu)</option>
+            <option value="ml">🇮🇳 മലയാളം (Malayalam)</option>
+            <option value="bn">🇮🇳 বাংলা (Bengali)</option>
+            <option value="mr">🇮🇳 मराठी (Marathi)</option>
+            <option value="gu">🇮🇳 ગુજરાતી (Gujarati)</option>
+            <option value="pa">🇮🇳 ਪੰਜਾਬੀ (Punjabi)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Certificate Exam:</label>
+          <select id="bookCertInput">
+            <option value="yes">🎓 Enabled</option>
+            <option value="no">📖 Reading Only</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="pdf-drop" onclick="document.getElementById('pdfInput').click()">
+        <strong style="font-size:14.5px;">📄 Click here to Upload Book PDF</strong>
+        <div style="font-size:12px; color:#64748b; margin-top:3px;">Every page opens below just like the student reader—click Video/Audio buttons directly to attach files</div>
+        <input type="file" id="pdfInput" accept="application/pdf" style="display:none" onchange="handlePDFUpload(event)">
+      </div>
+      <div id="loadingMsg" style="display:none; text-align:center; padding:12px; font-weight:700;">⏳ Extracting Book Pages... Please wait...</div>
+    </div>
+
+    <!-- Visual Reader-Like Page Editor -->
+    <div id="liveReaderWorkspace" style="display:none;">
+      <div class="live-reader-shell">
+        <div class="live-header">
+          <span id="liveHeaderTitle">BOOK TITLE • PAGE 1</span>
+          <span id="livePageBadge" style="background:#e2e8f0; color:#0f172a; padding:3px 9px; border-radius:12px;">Page 1 of 1</span>
+        </div>
+
+        <!-- Direct Click-to-Upload Buttons (Just like SmartPage Reader!) -->
+        <div class="live-control-bar">
+          <button type="button" class="upload-action-btn" id="btnUploadVideo" onclick="document.getElementById('pageVideoFile').click()">
+            ▶ Watch this page (Upload Video)
+          </button>
+          <input type="file" id="pageVideoFile" accept="video/*" style="display:none" onchange="attachPageVideo(event)">
+
+          <button type="button" class="upload-action-btn" id="btnUploadLessonAudio" onclick="document.getElementById('pageLessonAudioFile').click()">
+            🎧 Listen Lesson (Upload Audio)
+          </button>
+          <input type="file" id="pageLessonAudioFile" accept="audio/*" style="display:none" onchange="attachPageLessonAudio(event)">
+
+          <button type="button" class="upload-action-btn" id="btnUploadReadAudio" onclick="document.getElementById('pageReadAudioFile').click()" style="flex:0 1 auto;">
+            🔊 + Read MP3
+          </button>
+          <input type="file" id="pageReadAudioFile" accept="audio/*" style="display:none" onchange="attachPageReadAudio(event)">
+        </div>
+
+        <!-- Instant Preview of Attached Video/Audio for Current Page -->
+        <div class="media-preview-strip" id="mediaPreviewStrip">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span id="attachedSummaryText">Attached Media for This Page</span>
+            <button type="button" onclick="clearThisPageMedia()" style="background:#ef4444; color:#fff; border:none; padding:3px 8px; border-radius:4px; font-size:11px; cursor:pointer;">✕ Remove Media</button>
+          </div>
+          <video id="adminVideoPreview" controls style="display:none;"></video>
+          <audio id="adminLessonAudioPreview" controls style="display:none;"></audio>
+        </div>
+
+        <!-- Actual Book Page Preview -->
+        <div class="live-page-canvas" id="livePageCanvas"></div>
+
+        <!-- Page Navigation (Next clears/loads next page cleanly) -->
+        <div class="live-footer">
+          <button type="button" class="nav-page-btn" id="prevPageBtn" onclick="goEditorPage(-1)">‹ Previous Page</button>
+          <span style="font-size:13px; font-weight:700; color:#475569;" id="footerCounter">Page 1</span>
+          <button type="button" class="nav-page-btn" id="nextPageBtn" onclick="goEditorPage(1)">Save & Next Page ›</button>
+        </div>
+      </div>
+
+      <button type="button" class="btn-approve" onclick="approveAndPublishBook()">
+        ✅ Save, Approve & Publish Directly to SmartPage Library
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  let allLibraryBooks = [];
+  let editingBookId = null;
+  let editorPages = [];
+  let currentIdx = 0;
+  let currentFilter = "all";
+
+  /* IndexedDB Storage (Supports multiple full books with videos & audios) */
+  function openSmartDB() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open("SmartPageDB", 2);
+      req.onupgradeneeded = e => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains("library_books")) {
+          db.createObjectStore("library_books", { keyPath: "id" });
+        }
+        if (!db.objectStoreNames.contains("books")) {
+          db.createObjectStore("books", { keyPath: "id" });
+        }
+      };
+      req.onsuccess = e => resolve(e.target.result);
+      req.onerror = e => reject(e.target.error);
+    });
+  }
+
+  async function loadAllBooksFromDB() {
+    const db = await openSmartDB();
+    return new Promise(resolve => {
+      const tx = db.transaction("library_books", "readonly");
+      const req = tx.objectStore("library_books").getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => resolve([]);
+    });
+  }
+
+  async function saveBookToDB(bookObj) {
+    const db = await openSmartDB();
+    return new Promise(resolve => {
+      const tx = db.transaction("library_books", "readwrite");
+      tx.objectStore("library_books").put(bookObj);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => resolve(false);
+    });
+  }
+
+  async function deleteBookFromDB(bookId) {
+    const db = await openSmartDB();
+    return new Promise(resolve => {
+      const tx = db.transaction("library_books", "readwrite");
+      tx.objectStore("library_books").delete(bookId);
+      tx.oncomplete = () => resolve(true);
+    });
+  }
+
+  async function renderDashboard() {
+    allLibraryBooks = await loadAllBooksFromDB();
+    const grid = document.getElementById("adminBooksGrid");
+    const filtered = currentFilter === "all" ? allLibraryBooks : allLibraryBooks.filter(b => b.category === currentFilter);
+
+    const catLabels = {
+      academic: "🎓 ACADEMIC & EXAM PREP",
+      languages: "🗣️ SPOKEN LANGUAGES",
+      skills: "🛠️ TECHNICAL & AI SKILLS",
+      literature: "📖 NOVELS & SHAYARI"
+    };
+
+    let html = `
+      <div class="add-card" onclick="startNewBook()">
+        <div style="font-size:34px; margin-bottom:8px;">➕</div>
+        <div style="font-size:16px; font-weight:800; color:#0f172a;">Add New Book / Exam Paper</div>
+        <div style="font-size:12.5px; color:#64748b; margin-top:4px;">e.g., TET Paper 1 Urdu, Degree Textbook</div>
+      </div>
+    `;
+
+    html += filtered.map(b => `
+      <div class="book-card">
+        <div>
+          <div class="tag-row">
+            <span class="cat-tag">${catLabels[b.category] || "📚 BOOK"}</span>
+            <span class="status-pill">✅ Live in Library</span>
+          </div>
+          <h3>${b.title}</h3>
+          <p>${b.pages.length} Pages • Language: ${(b.defaultLang || "ur").toUpperCase()}</p>
+        </div>
+        <div class="card-btns">
+          <button type="button" class="btn-edit" onclick="editExistingBook('${b.id}')">✏️ Edit Pages & Media</button>
+          <button type="button" class="btn-del" onclick="removeBook('${b.id}')">🗑️</button>
+        </div>
+      </div>
+    `).join("");
+
+    grid.innerHTML = html;
+  }
+
+  function filterAdminBooks(cat, btn) {
+    currentFilter = cat;
+    document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    renderDashboard();
+  }
+
+  function showDashboard() {
+    document.getElementById("editorView").style.display = "none";
+    document.getElementById("backToDashBtn").style.display = "none";
+    document.getElementById("dashboardView").style.display = "block";
+    renderDashboard();
+  }
+
+  function startNewBook() {
+    editingBookId = "book_" + Date.now();
+    editorPages = [];
+    currentIdx = 0;
+    document.getElementById("bookTitleInput").value = "";
+    document.getElementById("bookCategoryInput").value = "academic";
+    document.getElementById("bookLangInput").value = "ur";
+    document.getElementById("bookCertInput").value = "yes";
+    document.getElementById("pdfInput").value = "";
+    document.getElementById("liveReaderWorkspace").style.display = "none";
+
+    document.getElementById("dashboardView").style.display = "none";
+    document.getElementById("editorView").style.display = "block";
+    document.getElementById("backToDashBtn").style.display = "inline-block";
+  }
+
+  function editExistingBook(bookId) {
+    const book = allLibraryBooks.find(b => b.id === bookId);
+    if (!book) return;
+    editingBookId = book.id;
+    editorPages = JSON.parse(JSON.stringify(book.pages));
+    currentIdx = 0;
+
+    document.getElementById("bookTitleInput").value = book.title;
+    document.getElementById("bookCategoryInput").value = book.category || "academic";
+    document.getElementById("bookLangInput").value = book.defaultLang || "ur";
+    document.getElementById("bookCertInput").value = book.hasCert !== false ? "yes" : "no";
+
+    document.getElementById("dashboardView").style.display = "none";
+    document.getElementById("editorView").style.display = "block";
+    document.getElementById("backToDashBtn").style.display = "inline-block";
+    document.getElementById("liveReaderWorkspace").style.display = "block";
+    renderEditorPage();
+  }
+
+  async function removeBook(bookId) {
+    if (!confirm("Delete this book from Admin & Library?")) return;
+    await deleteBookFromDB(bookId);
+    renderDashboard();
+  }
+
+  async function handlePDFUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!document.getElementById("bookTitleInput").value.trim()) {
+      document.getElementById("bookTitleInput").value = file.name.replace(/\.pdf$/i, "");
+    }
+
+    document.getElementById("loadingMsg").style.display = "block";
+    document.getElementById("liveReaderWorkspace").style.display = "none";
+
+    try {
+      const buffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+      editorPages = [];
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale: 1.5 });
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+        const imageUrl = canvas.toDataURL("image/jpeg", 0.88);
+
+        const textContent = await page.getTextContent();
+        const rawText = textContent.items.map(it => it.str).join(" ").replace(/\s+/g, " ").trim();
+
+        // Clean, crisp page layout (works 100% accurately for Urdu, Arabic, Hindi, English!)
+        const pageHtml = `<div style="width:100%; text-align:center;"><img src="${imageUrl}" style="width:100%; height:auto; display:block;" alt="Page ${i}"></div>`;
+
+        // Every page starts 100% EMPTY (no default video/audio)
+        editorPages.push({
+          pageNum: i,
+          videoUrl: "",
+          videoName: "",
+          lessonAudioUrl: "",
+          lessonAudioName: "",
+          recordedAudioUrl: "",
+          readAudioName: "",
+          rawText: rawText,
+          html: pageHtml
+        });
+      }
+
+      currentIdx = 0;
+      document.getElementById("liveReaderWorkspace").style.display = "block";
+      renderEditorPage();
+    } catch (err) {
+      alert("PDF Error: " + err.message);
+    } finally {
+      document.getElementById("loadingMsg").style.display = "none";
+    }
+  }
+
+  function renderEditorPage() {
+    const p = editorPages[currentIdx];
+    const total = editorPages.length;
+    const title = document.getElementById("bookTitleInput").value || "SMARTPAGE BOOK";
+
+    document.getElementById("liveHeaderTitle").innerText = `${title.toUpperCase()} • PAGE ${currentIdx + 1}`;
+    document.getElementById("livePageBadge").innerText = `Page ${currentIdx + 1} of ${total}`;
+    document.getElementById("footerCounter").innerText = `— Page ${currentIdx + 1} / ${total} —`;
+
+    document.getElementById("prevPageBtn").disabled = currentIdx === 0;
+    document.getElementById("nextPageBtn").disabled = currentIdx === total - 1;
+    document.getElementById("nextPageBtn").innerText = currentIdx === total - 1 ? "Last Page ✓" : "Save & Next Page ›";
+
+    // Reset file inputs so next page is completely fresh
+    document.getElementById("pageVideoFile").value = "";
+    document.getElementById("pageLessonAudioFile").value = "";
+    document.getElementById("pageReadAudioFile").value = "";
+
+    // Update Video Button State
+    const btnVid = document.getElementById("btnUploadVideo");
+    if (p.videoUrl) {
+      btnVid.classList.add("attached");
+      btnVid.innerHTML = `✅ Video: ${p.videoName || "Attached"} (Change)`;
+    } else {
+      btnVid.classList.remove("attached");
+      btnVid.innerHTML = `▶ Watch this page (Upload Video)`;
+    }
+
+    // Update Lesson Audio Button State
+    const btnLes = document.getElementById("btnUploadLessonAudio");
+    if (p.lessonAudioUrl) {
+      btnLes.classList.add("attached");
+      btnLes.innerHTML = `✅ Lesson Audio: ${p.lessonAudioName || "Attached"} (Change)`;
+    } else {
+      btnLes.classList.remove("attached");
+      btnLes.innerHTML = `🎧 Listen Lesson (Upload Audio)`;
+    }
+
+    // Update Read-Aloud Audio Button State
+    const btnRead = document.getElementById("btnUploadReadAudio");
+    if (p.recordedAudioUrl) {
+      btnRead.classList.add("attached");
+      btnRead.innerHTML = `✅ Read MP3`;
+    } else {
+      btnRead.classList.remove("attached");
+      btnRead.innerHTML = `🔊 + Read MP3`;
+    }
+
+    // Preview strip for current page's attached media
+    const strip = document.getElementById("mediaPreviewStrip");
+    const vidEl = document.getElementById("adminVideoPreview");
+    const audEl = document.getElementById("adminLessonAudioPreview");
+
+    if (p.videoUrl || p.lessonAudioUrl) {
+      strip.style.display = "block";
+      if (p.videoUrl) {
+        vidEl.style.display = "block";
+        vidEl.src = p.videoUrl;
+      } else {
+        vidEl.style.display = "none";
+        vidEl.src = "";
+      }
+      if (p.lessonAudioUrl) {
+        audEl.style.display = "block";
+        audEl.src = p.lessonAudioUrl;
+      } else {
+        audEl.style.display = "none";
+        audEl.src = "";
+      }
+    } else {
+      strip.style.display = "none";
+      vidEl.src = "";
+      audEl.src = "";
+    }
+
+    document.getElementById("livePageCanvas").innerHTML = p.html;
+  }
+
+  function attachPageVideo(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      editorPages[currentIdx].videoUrl = e.target.result;
+      editorPages[currentIdx].videoName = file.name;
+      renderEditorPage();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function attachPageLessonAudio(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      editorPages[currentIdx].lessonAudioUrl = e.target.result;
+      editorPages[currentIdx].lessonAudioName = file.name;
+      renderEditorPage();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function attachPageReadAudio(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      editorPages[currentIdx].recordedAudioUrl = e.target.result;
+      editorPages[currentIdx].readAudioName = file.name;
+      renderEditorPage();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function clearThisPageMedia() {
+    const p = editorPages[currentIdx];
+    p.videoUrl = ""; p.videoName = "";
+    p.lessonAudioUrl = ""; p.lessonAudioName = "";
+    p.recordedAudioUrl = ""; p.readAudioName = "";
+    renderEditorPage();
+  }
+
+  function goEditorPage(step) {
+    const target = currentIdx + step;
+    if (target >= 0 && target < editorPages.length) {
+      currentIdx = target;
+      renderEditorPage();
+      window.scrollTo({ top: 180, behavior: "smooth" });
+    }
+  }
+
+  async function approveAndPublishBook() {
+    if (editorPages.length === 0) {
+      alert("Please upload a PDF first!");
+      return;
+    }
+
+    const title = document.getElementById("bookTitleInput").value.trim() || "Untitled SmartBook";
+    const category = document.getElementById("bookCategoryInput").value;
+    const defaultLang = document.getElementById("bookLangInput").value;
+    const hasCert = document.getElementById("bookCertInput").value === "yes";
+
+    const bookRecord = {
+      id: editingBookId || ("book_" + Date.now()),
+      title: title,
+      category: category,
+      defaultLang: defaultLang,
+      hasCert: hasCert,
+      pagesCount: editorPages.length,
+      pages: editorPages.map((p, idx) => ({
+        header: `${title.toUpperCase()} • PAGE ${idx + 1}`,
+        defaultLang: defaultLang,
+        videoUrl: p.videoUrl || "",
+        lessonAudioUrl: p.lessonAudioUrl || "",
+        recordedAudioUrl: p.recordedAudioUrl || "",
+        rawText: p.rawText || "",
+        html: p.html
+      }))
+    };
+
+    await saveBookToDB(bookRecord);
+    alert(`✅ "${title}" Approved & Published directly to SmartPage Library!`);
+    showDashboard();
+  }
+
+  const ADMIN_PASS = "OMF2026";
+  if (sessionStorage.getItem("omf_admin_unlocked") !== "yes") {
+    const entered = prompt("🔒 SmartPage Admin Studio — Enter Admin Password:");
+    if (entered === ADMIN_PASS) {
+      sessionStorage.setItem("omf_admin_unlocked", "yes");
+    } else {
+      alert("Incorrect Password!");
+      window.location.href = "Login.html";
+    }
+  }
+async function exportForVercel() {
+    const books = await loadAllBooksFromDB();
+    if (!books || books.length === 0) {
+      alert("Pehle apni book Save & Approve karein!");
+      return;
+    }
+    const cleanBooks = books.map(b => ({
+      ...b,
+      pages: b.pages.map((p, pIdx) => {
+        const num = String(pIdx + 1).padStart(2, "0");
+        return {
+          ...p,
+          videoUrl: p.videoUrl ? `media/page${num}.mp4` : "",
+          lessonAudioUrl: p.lessonAudioUrl ? `media/page${num}.m4a` : "",
+          recordedAudioUrl: ""
+        };
+      })
+    }));
+
+    const jsText = "window.PUBLISHED_CATALOG_DATA = " + JSON.stringify(cleanBooks) + ";";
+    const blob = new Blob([jsText], { type: "application/javascript" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "book_data.js";
+    a.click();
+    alert("✅ book_data.js download ho gayi! Ise Downloads se utha kar DigitalBook folder mein paste kar dein.");
+  }
+
+  renderDashboard();
+</script>
+
+  renderDashboard();
+</script>
+</body>
+</html>
