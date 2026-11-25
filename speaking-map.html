@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartPage Level 1 — 10 Unique Pages Per Category</title>
+  <style>
+    :root {
+      --toolbar-bg: #d9dee4;
+      --toolbar-border: #b8c0c8;
+      --navy: #0f1e36;
+      --paper: #fdfcf7;
+      --gold: #b45309;
+      --emerald: #065f46;
+      --green: #16a34a;
+      --accent: #1d4ed8;
+      --text: #111827;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body {
+      background: linear-gradient(135deg, #5d7485 0%, #8fa3b2 50%, #5d7485 100%);
+      min-height: 100vh;
+      padding: 12px 10px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .reader-shell {
+      width: 100%;
+      max-width: 760px;
+      background: var(--toolbar-bg);
+      border: 1px solid #9ca3af;
+      border-radius: 8px;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+      overflow: hidden;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 12px;
+      background: #cfd6de;
+      border-bottom: 1px solid var(--toolbar-border);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy);
+      gap: 8px;
+    }
+    .top-left { display: flex; align-items: center; gap: 8px; }
+    .lib-btn {
+      background: #94a3b8;
+      color: #0f172a;
+      text-decoration: none;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .lib-btn:hover { background: #64748b; color: #fff; }
+    .book-meta { font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .level-pill {
+      background: var(--navy);
+      color: #fef3c7;
+      padding: 3px 9px;
+      border-radius: 12px;
+      font-size: 10.5px;
+      font-weight: 800;
+    }
+
+    .slim-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 5px;
+      padding: 6px 10px;
+      background: #e2e6ec;
+      border-bottom: 1px solid var(--toolbar-border);
+      overflow-x: auto;
+    }
+    .tb-group { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+    .tb-btn {
+      background: var(--navy);
+      color: #fff;
+      border: 1px solid #091324;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .tb-btn.light { background: #f8fafc; color: #0f172a; border: 1px solid #94a3b8; }
+    .tb-select {
+      background: #f8fafc;
+      color: #0f172a;
+      border: 1px solid #94a3b8;
+      padding: 4px 7px;
+      border-radius: 5px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .map-sheet {
+      background: var(--paper);
+      width: calc(100% - 24px);
+      min-height: 920px;
+      margin: 12px auto;
+      padding: 22px 24px;
+      border: 1px solid #94a3b8;
+      outline: 4px double #cbd5e1;
+      outline-offset: -8px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.14);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .avatar-card {
+      background: #fff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+    }
+    .avatar-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .avatar-left { display: flex; align-items: center; gap: 10px; }
+    .avatar-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #dbeafe;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      border: 2px solid var(--navy);
+      flex-shrink: 0;
+    }
+    .avatar-info h3 { font-size: 15px; color: var(--navy); }
+    .avatar-info p { font-size: 11.5px; color: #475569; margin-top: 1px; }
+    .score-badge {
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+      color: #92400e;
+      padding: 4px 9px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .role-strip {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed #cbd5e1;
+    }
+    .role-chip {
+      background: #f1f5f9;
+      border: 1px solid #94a3b8;
+      padding: 4px 9px;
+      border-radius: 14px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .role-chip.active { background: var(--navy); color: #fef3c7; border-color: var(--navy); }
+
+    .map-canvas {
+      border-radius: 10px;
+      padding: 16px;
+      border: 1.5px solid #94a3b8;
+      transition: background 0.3s ease;
+    }
+    .map-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .map-title { font-size: 12.5px; font-weight: 800; color: var(--navy); text-transform: uppercase; }
+    .city-reset-btn {
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: none;
+    }
+    .road-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+    .loc-node {
+      background: #fff;
+      border-radius: 10px;
+      padding: 16px 12px;
+      text-align: center;
+      border: 1.5px solid #cbd5e1;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+      cursor: pointer;
+    }
+    .loc-node:hover { border-color: var(--navy); transform: translateY(-2px); }
+    .loc-icon { font-size: 30px; display: block; margin-bottom: 5px; }
+    .loc-name { font-size: 14px; font-weight: 800; color: var(--navy); }
+    .loc-sub { font-size: 11.5px; color: #475569; margin-top: 2px; }
+    .step-count-pill {
+      display: inline-block;
+      margin-top: 7px;
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+      color: #92400e;
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 2px 9px;
+      border-radius: 10px;
+    }
+
+    @keyframes ringShake {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-7deg); }
+      75% { transform: rotate(7deg); }
+    }
+    .ringing { animation: ringShake 0.35s infinite; border-color: #dc2626 !important; background: #fef2f2 !important; }
+
+    .call-screen {
+      display: none;
+      background: var(--navy);
+      color: #fff;
+      border-radius: 10px;
+      padding: 24px;
+      text-align: center;
+      border: 2px solid var(--gold);
+      margin-top: 10px;
+    }
+    .call-screen.active { display: block; }
+    .ans-btn {
+      margin-top: 12px;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 24px;
+      font-weight: 700;
+      font-size: 13.5px;
+      cursor: pointer;
+    }
+
+    .a4-lesson-stage { display: none; }
+    .a4-lesson-stage.active { display: block; }
+
+    .zone-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--navy);
+      color: #fff;
+      padding: 9px 14px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .zone-topbar-title { font-size: 13.5px; font-weight: 800; color: #fef3c7; }
+    .zone-page-badge {
+      background: #d97706;
+      color: #000;
+      padding: 2px 9px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .change-zone-btn {
+      background: #fff;
+      color: var(--navy);
+      border: none;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .dialogue-turn-card {
+      background: #fff;
+      border: 1.5px solid #cbd5e1;
+      border-left: 4px solid var(--navy);
+      border-radius: 8px;
+      padding: 11px 14px;
+      margin-bottom: 11px;
+    }
+    .dialogue-turn-card.active-turn {
+      border-color: var(--green);
+      border-left: 5px solid var(--green);
+      background: #f0fdf4;
+    }
+    .turn-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      border-bottom: 1px dashed #e2e8f0;
+      padding-bottom: 4px;
+    }
+    .you-speak-block {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      padding: 8px 10px;
+      margin-bottom: 7px;
+    }
+    .speaker-tag { font-size: 10.5px; font-weight: 800; color: var(--accent); text-transform: uppercase; }
+    .en-line { font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 2px; }
+    .ar-line { font-size: 16px; font-weight: 700; color: var(--emerald); direction: rtl; text-align: right; margin-top: 3px; }
+    .tr-line { font-size: 12.5px; color: #334155; margin-top: 3px; }
+    .opp-reply-block {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+    .opp-tag { font-size: 10.5px; font-weight: 800; color: #475569; text-transform: uppercase; }
+
+    .turn-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .mini-btn {
+      background: #e2e8f0;
+      border: 1px solid #94a3b8;
+      color: #0f172a;
+      padding: 4px 9px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .speak-now-btn {
+      background: var(--green);
+      color: #fff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .speak-now-btn.listening { background: #dc2626; }
+    .turn-status { font-size: 11.5px; font-weight: 700; color: var(--green); }
+
+    .cat-page-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #e2e8f0;
+      padding: 9px 12px;
+      border-radius: 6px;
+      border: 1px solid #94a3b8;
+      margin-top: 12px;
+    }
+    .nav-p-btn {
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .nav-p-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .a4-bottom-stamp {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10.5px;
+      color: #64748b;
+      margin-top: 14px;
+      padding-top: 8px;
+      border-top: 1px solid #cbd5e1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="reader-shell">
+    <div class="top-bar">
+      <div class="top-left">
+        <a href="Library.html" class="lib-btn">← Library</a>
+        <span class="book-meta">LIVE SPEAKING CITY MAP • 150 UNIQUE A4 PAGES</span>
+      </div>
+      <div>
+        <span class="level-pill">⭐ LEVEL 1: FOUNDATION</span>
+      </div>
+    </div>
+
+    <div class="slim-toolbar">
+      <div class="tb-group">
+        <a href="english-course.html" class="tb-btn">📖 Back to 30-Day Book</a>
+        <button class="tb-btn light" onclick="switchAvatarWorld('city')">🗺️ All 5 Avatars</button>
+      </div>
+      <div class="tb-group">
+        <select class="tb-select" id="genderSelect" onchange="setGender(this.value)">
+          <option value="male">👨 Male Avatar</option>
+          <option value="female">👩 Female Avatar</option>
+        </select>
+        <select class="tb-select" id="langSelect" onchange="setLang(this.value)">
+          <option value="ur">PK/IN اردو</option>
+          <option value="kn">KN ಕನ್ನಡ</option>
+          <option value="hi">IN हिंदी</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="map-sheet">
+      <div>
+        <div class="avatar-card">
+          <div class="avatar-top">
+            <div class="avatar-left">
+              <div class="avatar-circle" id="mainAvatar">🧑</div>
+              <div class="avatar-info">
+                <h3 id="avatarRoleTitle">Avatar: City Explorer (Level 1)</h3>
+                <p id="avatarRoleDesc">5 Avatars × 3 Categories × 10 Unique A4 Pages each = 150 Full Speaking Pages!</p>
+              </div>
+            </div>
+            <div class="score-badge" id="starsBadge">⭐ Spoken: 0</div>
+          </div>
+          <div class="role-strip" id="roleStrip"></div>
+        </div>
+
+        <div class="map-canvas" id="mapContainer">
+          <div class="map-header">
+            <span class="map-title" id="mapTitle">🗺️ LEVEL 1: SELECT AVATAR WORLD</span>
+            <button class="city-reset-btn" id="cityResetBtn" onclick="switchAvatarWorld('city')">🏠 Return to All Avatars</button>
+          </div>
+          <div class="road-grid" id="mapGrid"></div>
+        </div>
+
+        <div class="call-screen" id="callScreen">
+          <div style="font-size:38px;">📞</div>
+          <div style="font-size:11px; opacity:0.85; letter-spacing:1px; margin-top:4px;">TRING-TRING • INCOMING CALL</div>
+          <h3 id="callerName" style="margin:6px 0;">Phone Line Calling</h3>
+          <button class="ans-btn" onclick="answerPhoneCall()">📲 Tap to Receive Call & Open 10 A4 Pages</button>
+        </div>
+
+        <div class="a4-lesson-stage" id="a4LessonStage">
+          <div class="zone-topbar">
+            <span class="zone-topbar-title" id="zoneHeaderTitle">Classroom Conversation</span>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span class="zone-page-badge" id="catPageBadge">A4 Page 1 / 10</span>
+              <button class="change-zone-btn" onclick="showZoneCardsAgain()">← Change Category</button>
+            </div>
+          </div>
+
+          <div id="fullA4DialoguesList"></div>
+
+          <div class="cat-page-nav">
+            <button class="nav-p-btn" id="prevCatPageBtn" onclick="changeCatPage(-1)">← Prev A4 Page</button>
+            <select class="tb-select" id="catPageSelect" onchange="jumpCatPage(this.value)"></select>
+            <button class="nav-p-btn" id="nextCatPageBtn" onclick="changeCatPage(1)">Next A4 Page →</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="a4-bottom-stamp">
+        <span>SmartPage Royal Edition • Level 1 (10 Distinct A4 Pages per Category)</span>
+        <span id="bottomRoleStamp">Role: Explorer</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentLang = localStorage.getItem('sp_support_lang') || 'ur';
+    let userGender = localStorage.getItem('sp_user_gender') || 'male';
+    let spokenCount = parseInt(localStorage.getItem('sp_spoken_count') || '0', 10);
+    let activeWorld = 'city';
+    let activeZoneIndex = 0;
+    let activeCatPage = 1;
+    let activeTurnIdx = 0;
+    let completedTurns = {};
+    let ringInterval = null;
+    let pendingCallZoneIdx = null;
+
+    const avatarsByGender = {
+      male:   { city: "🧑", teacher: "👨‍🏫", student: "👦🎒", officer: "👮‍♂️", job: "👨‍💼", phone: "📱🧔" },
+      female: { city: "👩", teacher: "👩‍🏫", student: "👧🎒", officer: "👮‍♀️", job: "👩‍💼", phone: "📱🧕" }
+    };
+
+    const roleLabels = [
+      { key: "city", label: "All 5 Avatars" },
+      { key: "teacher", label: "Teacher (30p)" },
+      { key: "student", label: "Student (30p)" },
+      { key: "officer", label: "Officer (30p)" },
+      { key: "job", label: "Job Seeker (30p)" },
+      { key: "phone", label: "Call Receiver (30p)" }
+    ];
+
+    /* 10 COMPLETELY DIFFERENT REAL-LIFE CONVERSATION PAGES FOR EACH ROLE (ZERO REPETITION!) */
+    const tenDistinctPagesByRole = {
+      teacher: [
+        // Page 1: Entering Classroom & Morning Greetings
+        {
+          title: "Entering Classroom & Morning Greetings",
+          turns: [
+            { you: "Good morning everyone! How are you all today?", you_ar: "صباح الخير جميعاً! كيف حالكم جميعاً اليوم؟", you_tr: { ur: "سب کو صبح بخیر! آج آپ سب کیسے ہیں؟", kn: "ಎಲ್ಲರಿಗೂ ಶುಭೋದಯ! ಇಂದು ನೀವೆಲ್ಲರೂ ಹೇಗಿದ್ದೀರಿ?", hi: "सभी को सुप्रभात! आज आप सब कैसे हैं?" }, opp: "Good morning Teacher! We are doing very well, thank you.", opp_ar: "صباح الخير يا أستاذ! نحن بخير والحمد لله، شكراً لك.", opp_tr: { ur: "صبح بخیر استاد! ہم بالکل ٹھیک ہیں، شکریہ۔", kn: "ಶುಭೋದಯ ಶಿಕ್ಷಕರೇ! ನಾವು ತುಂಬಾ ಚೆನ್ನಾಗಿದ್ದೇವೆ, ಧನ್ಯವಾದಗಳು.", hi: "सुप्रभात शिक्षक! हम बिल्कुल ठीक हैं, धन्यवाद।" } },
+            { you: "Please sit down and keep your bags neatly under the desk.", you_ar: "يرجى الجلوس ووضع حقائبكم بترتيب تحت المكتب.", you_tr: { ur: "براہ کرم بیٹھ جائیں اور اپنے بیگ ڈیسک کے نیچے سلیقے سے رکھیں۔", kn: "ದಯವಿಟ್ಟು ಕುಳಿತುಕೊಳ್ಳಿ ಮತ್ತು ನಿಮ್ಮ ಬ್ಯಾಗ್‌ಗಳನ್ನು ಮೇಜಿನ ಕೆಳಗೆ ಅಚ್ಚುಕಟ್ಟಾಗಿ ಇಡಿ.", hi: "कृपया बैठ जाइए और अपने बैग डेस्क के नीचे सलीके से रखिए।" }, opp: "Yes Teacher, we have placed our bags properly.", opp_ar: "نعم يا أستاذ، لقد وضعنا حقائبنا بشكل مرتب.", opp_tr: { ur: "جی ہاں استاد، ہم نے اپنے بیگ صحیح طریقے سے رکھ لیے ہیں۔", kn: "ಹೌದು ಶಿಕ್ಷಕರೇ, ನಾವು ನಮ್ಮ ಬ್ಯಾಗ್‌ಗಳನ್ನು ಸರಿಯಾಗಿ ಇರಿಸಿದ್ದೇವೆ.", hi: "हाँ शिक्षक, हमने अपने बैग सही तरीके से रख लिए हैं।" } },
+            { you: "Is everyone feeling fresh and ready to learn new English sentences?", you_ar: "هل يشعر الجميع بالنشاط والاستعداد لتعلم جمل إنجليزية جديدة؟", you_tr: { ur: "کیا سب تازہ دم ہیں اور نئے انگلش جملے سیکھنے کے لیے تیار ہیں؟", kn: "ಎಲ್ಲರೂ ಉತ್ಸಾಹದಿಂದ ಇದ್ದೀರಾ ಮತ್ತು ಹೊಸ ಇಂಗ್ಲಿಷ್ ವಾಕ್ಯಗಳನ್ನು ಕಲಿಯಲು ಸಿದ್ಧರಿದ್ದೀರಾ?", hi: "क्या सभी तरोताज़ा हैं और नए अंग्रेज़ी वाक्य सीखने के लिए तैयार हैं?" }, opp: "Yes Teacher! We are excited to start today's lesson.", opp_ar: "نعم يا أستاذ! نحن متحمسون لبدء درس اليوم.", opp_tr: { ur: "جی ہاں استاد! ہم آج کا سبق شروع کرنے کے لیے پرجوش ہیں۔", kn: "ಹೌದು ಶಿಕ್ಷಕರೇ! ಇಂದಿನ ಪಾಠವನ್ನು ಪ್ರಾರಂಭಿಸಲು ನಾವು ಉತ್ಸುಕರಾಗಿದ್ದೇವೆ.", hi: "हाँ शिक्षक! हम आज का पाठ शुरू करने के लिए उत्साहित हैं।" } }
+          ]
+        },
+        // Page 2: Attendance & Checking Latecomers
+        {
+          title: "Taking Attendance & Punctuality",
+          turns: [
+            { you: "Let us take the morning attendance. Answer clearly when I call your name.", you_ar: "دعونا نأخذ الحضور الصباحي. أجيبوا بوضوح عندما أنادي أسماءكم.", you_tr: { ur: "آئیں صبح کی حاضری لیتے ہیں۔ جب میں آپ کا نام پکاروں تو صاف آواز میں جواب دیں۔", kn: "ಬೆಳಗಿನ ಹಾಜರಾತಿ ತೆಗೆದುಕೊಳ್ಳೋಣ. ನಾನು ನಿಮ್ಮ ಹೆಸರನ್ನು ಕರೆದಾಗ ಸ್ಪಷ್ಟವಾಗಿ ಉತ್ತರಿಸಿ.", hi: "आइए सुबह की उपस्थिति लेते हैं। जब मैं आपका नाम पुकारूँ तो साफ़ आवाज़ में उत्तर दें।" }, opp: "Present Teacher! All students in the first row are here.", opp_ar: "حاضر يا أستاذ! جميع طلاب الصف الأول موجودون.", opp_tr: { ur: "حاضر جناب! پہلی قطار کے تمام طلباء موجود ہیں۔", kn: "ಹಾಜರ್ ಶಿಕ್ಷಕರೇ! ಮೊದಲ ಸಾಲಿನ ಎಲ್ಲಾ ವಿದ್ಯಾರ್ಥಿಗಳು ಇಲ್ಲಿದ್ದಾರೆ.", hi: "उपस्थित शिक्षक! पहली पंक्ति के सभी छात्र यहाँ हैं।" } },
+            { you: "Why are you ten minutes late to class today, Ahmed?", you_ar: "لماذا تأخرت عشر دقائق عن الفصل اليوم يا أحمد؟", you_tr: { ur: "احمد، آج آپ کلاس میں دس منٹ دیر سے کیوں آئے ہیں؟", kn: "ಅಹ್ಮದ್, ಇಂದು ನೀನು ತರಗತಿಗೆ ಹತ್ತು ನಿಮಿಷ ತಡವಾಗಿ ಏಕೆ ಬಂದಿದ್ದೀಯಾ?", hi: "अहमद, आज तुम कक्षा में दस मिनट देरी से क्यों आए हो?" }, opp: "I am sorry Teacher, our school bus was stuck in traffic.", opp_ar: "أنا آسف يا أستاذ، كانت حافلتنا المدرسية عالقة في الزحام.", opp_tr: { ur: "معاف کیجئے استاد، ہماری اسکول بس ٹریفک میں پھنس گئی تھی۔", kn: "ಕ್ಷಮಿಸಿ ಶಿಕ್ಷಕರೇ, ನಮ್ಮ ಶಾಲಾ ಬಸ್ ಟ್ರಾಫಿಕ್‌ನಲ್ಲಿ ಸಿಲುಕಿಕೊಂಡಿತ್ತು.", hi: "माफ़ कीजिए शिक्षक, हमारी स्कूल बस ट्रैफ़िक में फँस गई थी।" } },
+            { you: "Alright, come inside quickly and always try to leave home early.", you_ar: "حسناً، ادخل بسرعة وحاول دائماً مغادرة المنزل مبكراً.", you_tr: { ur: "ٹھیک ہے، جلدی اندر آ جائیں اور ہمیشہ گھر سے جلدی نکلنے کی کوشش کریں۔", kn: "ಸರಿ, ಬೇಗ ಒಳಗೆ ಬಾ ಮತ್ತು ಯಾವಾಗಲೂ ಮನೆಯಿಂದ ಬೇಗ ಹೊರಡಲು ಪ್ರಯತ್ನಿಸು.", hi: "ठीक है, जल्दी अंदर आ जाओ और हमेशा घर से जल्दी निकलने की कोशिश करो।" }, opp: "Thank you Teacher, I will be on time from tomorrow.", opp_ar: "شكراً لك يا أستاذ، سأكون في الوقت المحدد من الغد.", opp_tr: { ur: "شکریہ استاد، کل سے میں وقت پر آؤں گا۔", kn: "ಧನ್ಯವಾದಗಳು ಶಿಕ್ಷಕರೇ, ನಾಳೆಯಿಂದ ನಾನು ಸಮಯಕ್ಕೆ ಸರಿಯಾಗಿ ಬರುತ್ತೇನೆ.", hi: "धन्यवाद शिक्षक, कल से मैं समय पर आऊँगा।" } }
+          ]
+        },
+        // Page 3: Checking Homework & Notebooks
+        {
+          title: "Checking Homework & Notebooks",
+          turns: [
+            { you: "Please take out your English homework notebooks and place them on your desk.", you_ar: "يرجى إخراج دفاتر الواجب المنزلي ووضعها على مكاتبكم.", you_tr: { ur: "براہ کرم اپنی انگلش ہوم ورک کاپیاں نکالیں اور ڈیسک پر رکھیں۔", kn: "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಇಂಗ್ಲಿಷ್ ಮನೆಕೆಲಸದ ನೋಟ್‌ಬುಕ್‌ಗಳನ್ನು ಹೊರತೆಗೆದು ಮೇಜಿನ ಮೇಲೆ ಇರಿಸಿ.", hi: "कृपया अपनी अंग्रेज़ी होमवर्क नोटबुक निकालें और अपने डेस्क पर रखें।" }, opp: "Here is my notebook Teacher, I completed all five exercises.", opp_ar: "تفضل دفتري يا أستاذ، لقد أكملت جميع التمارين الخمسة.", opp_tr: { ur: "یہ میری کاپی ہے استاد، میں نے پانچوں مشقیں مکمل کر لی ہیں۔", kn: "ಇಲ್ಲಿ ನನ್ನ ನೋಟ್‌ಬುಕ್ ಇದೆ ಶಿಕ್ಷಕರೇ, ನಾನು ಎಲ್ಲಾ ಐದು ಅಭ್ಯಾಸಗಳನ್ನು ಪೂರ್ಣಗೊಳಿಸಿದ್ದೇನೆ.", hi: "यह रही मेरी नोटबुक शिक्षक, मैंने सभी पाँचों अभ्यास पूरे कर लिए हैं।" } },
+            { you: "Why did you leave the last two questions blank?", you_ar: "لماذا تركت السؤالين الأخيرين فارغين؟", you_tr: { ur: "آپ نے آخری دو سوال خالی کیوں چھوڑ دیے؟", kn: "ನೀನು ಕೊನೆಯ ಎರಡು ಪ್ರಶ್ನೆಗಳನ್ನು ಏಕೆ ಖಾಲಿ ಬಿಟ್ಟಿದ್ದೀಯಾ?", hi: "तुमने अंतिम दो प्रश्न खाली क्यों छोड़ दिए?" }, opp: "I did not understand the grammar rule for those two sentences.", opp_ar: "لم أفهم قاعدة النحو لتلك الجملتين.", opp_tr: { ur: "مجھے ان دو جملوں کا گرامر قاعدہ سمجھ نہیں آیا تھا۔", kn: "ಆ ಎರಡು ವಾಕ್ಯಗಳ ವ್ಯಾಕರಣ ನಿಯಮ ನನಗೆ ಅರ್ಥವಾಗಲಿಲ್ಲ.", hi: "मुझे उन दो वाक्यों का व्याकरण नियम समझ नहीं आया था।" } },
+            { you: "No problem, I will explain it on the board right now.", you_ar: "لا مشكلة، سأشرحها على السبورة الآن.", you_tr: { ur: "کوئی بات نہیں، میں ابھی بورڈ پر اسے سمجھا دوں گا۔", kn: "ಪರವಾಗಿಲ್ಲ, ನಾನು ಈಗಲೇ ಬೋರ್ಡ್ ಮೇಲೆ ವಿವರಿಸುತ್ತೇನೆ.", hi: "कोई बात नहीं, मैं अभी बोर्ड पर इसे समझा दूँगा।" }, opp: "Thank you Teacher, that will help me finish it.", opp_ar: "شكراً لك يا أستاذ، سيساعدني ذلك على إنهائها.", opp_tr: { ur: "شکریہ استاد، اس سے مجھے اسے مکمل کرنے میں مدد ملے گی۔", kn: "ಧನ್ಯವಾದಗಳು ಶಿಕ್ಷಕರೇ, ಅದು ನನಗೆ ಪೂರ್ಣಗೊಳಿಸಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ.", hi: "धन्यवाद शिक्षक, इससे मुझे इसे पूरा करने में मदद मिलेगी।" } }
+          ]
+        },
+        // Page 4: Opening the Book & Reading Aloud
+        {
+          title: "Opening Textbook & Reading Practice",
+          turns: [
+            { you: "Open your textbook to chapter four, page number twenty-two.", you_ar: "افتحوا كتابكم المدرسي على الفصل الرابع، الصفحة رقم اثنين وعشرين.", you_tr: { ur: "اپنی کتاب کا چوتھا باب، صفحہ نمبر بائیس کھولیں۔", kn: "ನಿಮ್ಮ ಪಠ್ಯಪುಸ್ತಕದ ನಾಲ್ಕನೇ ಅಧ್ಯಾಯ, ಪುಟ ಸಂಖ್ಯೆ ಇಪ್ಪತ್ತೆರಡನ್ನು ತೆರೆಯಿರಿ.", hi: "अपनी पाठ्यपुस्तक का चौथा अध्याय, पेज नंबर बाईस खोलें।" }, opp: "We have opened page twenty-two, Teacher.", opp_ar: "لقد فتحنا الصفحة الثانية والعشرين يا أستاذ.", opp_tr: { ur: "ہم نے صفحہ بائیس کھول لیا ہے، استاد۔", kn: "ನಾವು ಇಪ್ಪತ್ತೆರಡನೇ ಪುಟವನ್ನು ತೆರೆದಿದ್ದೇವೆ, ಶಿಕ್ಷಕರೇ.", hi: "हमने पेज बाईस खोल लिया है, शिक्षक।" } },
+            { you: "Sara, please stand up and read the first paragraph aloud.", you_ar: "سارة، يرجى الوقوف وقراءة الفقرة الأولى بصوت عالٍ.", you_tr: { ur: "سارہ، براہ کرم کھڑی ہو جائیں اور پہلا پیراگراف اونچی آواز میں پڑھیں۔", kn: "ಸಾರಾ, ದಯವಿಟ್ಟು ಎದ್ದು ನಿಂತು ಮೊದಲ ಪ್ಯಾರಾಗ್ರಾಫ್ ಅನ್ನು ಗಟ್ಟಿಯಾಗಿ ಓದು.", hi: "सारा, कृपया खड़ी हो जाओ और पहला पैराग्राफ़ ज़ोर से पढ़ो।" }, opp: "Yes Teacher, I will read slowly and clearly.", opp_ar: "نعم يا أستاذ، سأقرأ ببطء ووضوح.", opp_tr: { ur: "جی ہاں استاد، میں آہستہ اور صاف آواز میں پڑھوں گی۔", kn: "ಹೌದು ಶಿಕ್ಷಕರೇ, ನಾನು ನಿಧಾನವಾಗಿ ಮತ್ತು ಸ್ಪಷ್ಟವಾಗಿ ಓದುತ್ತೇನೆ.", hi: "हाँ शिक्षक, मैं धीरे और साफ़ आवाज़ में पढ़ूँगी।" } },
+            { you: "Very well read! Notice how we pause at every comma and full stop.", you_ar: "قراءة ممتازة! لاحظوا كيف نتوقف عند كل فاصلة ونقطة.", you_tr: { ur: "بہت عمدہ پڑھا! غور کریں کہ ہم ہر کوما اور فل اسٹاپ پر کیسے رکتے ہیں۔", kn: "ತುಂಬಾ ಚೆನ್ನಾಗಿ ಓದಿದ್ದೀಯಾ! ಪ್ರತಿ ಅಲ್ಪವಿರಾಮ ಮತ್ತು ಪೂರ್ಣವಿರಾಮದಲ್ಲಿ ನಾವು ಹೇಗೆ ನಿಲ್ಲುತ್ತೇವೆ ಎಂಬುದನ್ನು ಗಮನಿಸಿ.", hi: "बहुत अच्छा पढ़ा! ध्यान दें कि हम हर अल्पविराम और पूर्णविराम पर कैसे रुकते हैं।" }, opp: "Understood Teacher, we will follow the punctuation marks.", opp_ar: "مفهوم يا أستاذ، سنتبع علامات الترقيم.", opp_tr: { ur: "سمجھ گئے استاد، ہم رموز اوقاف کا خیال رکھیں گے۔", kn: "ಅರ್ಥವಾಯಿತು ಶಿಕ್ಷಕರೇ, ನಾವು ವಿರಾಮ ಚಿಹ್ನೆಗಳನ್ನು ಅನುಸರಿಸುತ್ತೇವೆ.", hi: "समझ गए शिक्षक, हम विराम चिह्नों का पालन करेंगे।" } }
+          ]
+        },
+        // Page 5: Explaining Vocabulary & Meanings
+        {
+          title: "Teaching New Vocabulary & Meanings",
+          turns: [
+            { you: "Look at the whiteboard. Who knows the meaning of the word 'Confident'?", you_ar: "انظروا إلى السبورة البيضاء. من يعرف معنى كلمة 'واثق'؟", you_tr: { ur: "وائٹ بورڈ کی طرف دیکھیں۔ لفظ 'Confident' کا مطلب کون جانتا ہے؟", kn: "ವೈಟ್‌ಬೋರ್ಡ್ ನೋಡಿ. 'Confident' ಪದದ ಅರ್ಥ ಯಾರಿಗೆ ತಿಳಿದಿದೆ?", hi: "व्हाइटबोर्ड की ओर देखें। 'Confident' शब्द का अर्थ कौन जानता है?" }, opp: "Teacher, it means believing in yourself without fear!", opp_ar: "يا أستاذ، تعني الإيمان بالنفس دون خوف!", opp_tr: { ur: "استاد، اس کا مطلب ہے بغیر کسی خوف کے خود پر بھروسہ رکھنا!", kn: "ಶಿಕ್ಷಕರೇ, ಇದರರ್ಥ ಭಯವಿಲ್ಲದೆ ನಿಮ್ಮಲ್ಲಿ ನಂಬಿಕೆ ಇಡುವುದು!", hi: "शिक्षक, इसका मतलब है बिना किसी डर के खुद पर विश्वास रखना!" } },
+            { you: "Spot on! Now can someone make a simple sentence using 'Confident'?", you_ar: "إجابة دقيقة! الآن هل يمكن لأحد تكوين جملة بسيطة باستخدام كلمة 'واثق'؟", you_tr: { ur: "بالکل درست! اب کیا کوئی 'Confident' استعمال کر کے ایک آسان جملہ بنا سکتا ہے؟", kn: "ಸರಿಯಾದ ಉತ್ತರ! ಈಗ ಯಾರಾದರೂ 'Confident' ಬಳಸಿ ಸರಳ ವಾಕ್ಯವನ್ನು ರಚಿಸಬಹುದೇ?", hi: "बिल्कुल सही! अब क्या कोई 'Confident' का उपयोग करके एक सरल वाक्य बना सकता है?" }, opp: "I feel confident when I speak English with my friends.", opp_ar: "أشعر بالثقة عندما أتحدث الإنجليزية مع أصدقائي.", opp_tr: { ur: "جب میں اپنے دوستوں کے ساتھ انگلش بولتا ہوں تو مجھے اعتماد محسوس ہوتا ہے۔", kn: "ನನ್ನ ಸ್ನೇಹಿತರೊಂದಿಗೆ ಇಂಗ್ಲಿಷ್ ಮಾತನಾಡುವಾಗ ನನಗೆ ಆತ್ಮವಿಶ್ವಾಸ ಅನಿಸುತ್ತದೆ.", hi: "जब मैं अपने दोस्तों के साथ अंग्रेज़ी बोलता हूँ तो मुझे आत्मविश्वास महसूस होता है।" } },
+            { you: "Write this new word and sentence in your vocabulary notebook.", you_ar: "اكتبوا هذه الكلمة الجديدة والجملة في دفتر المفردات الخاص بكم.", you_tr: { ur: "اس نئے لفظ اور جملے کو اپنی وکیبلری نوٹ بک میں لکھ لیں۔", kn: "ಈ ಹೊಸ ಪದ ಮತ್ತು ವಾಕ್ಯವನ್ನು ನಿಮ್ಮ ಶಬ್ದಕೋಶದ ನೋಟ್‌ಬುಕ್‌ನಲ್ಲಿ ಬರೆಯಿರಿ.", hi: "इस नए शब्द और वाक्य को अपनी शब्दावली नोटबुक में लिख लें।" }, opp: "We are writing it down right now, Teacher.", opp_ar: "نحن نكتبها الآن يا أستاذ.", opp_tr: { ur: "ہم ابھی اسے لکھ رہے ہیں، استاد۔", kn: "ನಾವು ಈಗಲೇ ಅದನ್ನು ಬರೆಯುತ್ತಿದ್ದೇವೆ, ಶಿಕ್ಷಕರೇ.", hi: "हम अभी इसे लिख रहे हैं, शिक्षक।" } }
+          ]
+        },
+        // Page 6: Questioning Students About Yesterday's Lesson
+        {
+          title: "Reviewing & Questioning About Lesson",
+          turns: [
+            { you: "Tell me about yesterday's lesson. What were the three golden rules?", you_ar: "أخبروني عن درس الأمس. ما هي القواعد الذهبية الثلاث؟", you_tr: { ur: "مجھے کل کے سبق کے بارے میں بتائیں۔ تین سنہری اصول کیا تھے؟", kn: "ನಿನ್ನೆಯ ಪಾಠದ ಬಗ್ಗೆ ಹೇಳಿ. ಮೂರು ಸುವರ್ಣ ನಿಯಮಗಳು ಯಾವುವು?", hi: "मुझे कल के पाठ के बारे में बताइए। तीन सुनहरे नियम क्या थे?" }, opp: "Listen carefully, speak slowly, and never fear making mistakes.", opp_ar: "الاستماع جيداً، والتحدث ببطء، وعدم الخوف من ارتكاب الأخطاء.", opp_tr: { ur: "غور سے سننا، آہستہ بولنا، اور غلطیاں کرنے سے کبھی نہ ڈرنا۔", kn: "ಎಚ್ಚರಿಕೆಯಿಂದ ಆಲಿಸಿ, ನಿಧಾನವಾಗಿ ಮಾತನಾಡಿ, ಮತ್ತು ತಪ್ಪುಗಳನ್ನು ಮಾಡಲು ಎಂದಿಗೂ ಹೆದರಬೇಡಿ.", hi: "ध्यान से सुनना, धीरे बोलना, और गलतियाँ करने से कभी न डरना।" } },
+            { you: "Why is listening important before speaking a new language?", you_ar: "لماذا يعد الاستماع مهماً قبل التحدث بلغة جديدة؟", you_tr: { ur: "نئی زبان بولنے سے پہلے سننا کیوں ضروری ہے؟", kn: "ಹೊಸ ಭಾಷೆಯನ್ನು ಮಾತನಾಡುವ ಮೊದಲು ಆಲಿಸುವುದು ಏಕೆ ಮುಖ್ಯ?", hi: "नई भाषा बोलने से पहले सुनना क्यों महत्वपूर्ण है?" }, opp: "Because listening teaches us the right pronunciation and tone.", opp_ar: "لأن الاستماع يعلمنا النطق الصحيح ونبرة الصوت.", opp_tr: { ur: "کیونکہ سننے سے ہمیں صحیح تلفظ اور لہجہ سمجھ آتا ہے۔", kn: "ಏಕೆಂದರೆ ಆಲಿಸುವುದು ನಮಗೆ ಸರಿಯಾದ ಉಚ್ಚಾರಣೆ ಮತ್ತು ಧ್ವನಿಯನ್ನು ಕಲಿಸುತ್ತದೆ.", hi: "क्योंकि सुनने से हमें सही उच्चारण और लहजा सीखने को मिलता है।" } },
+            { you: "Brilliant answer! You all remembered the key points.", you_ar: "إجابة رائعة! لقد تذكرتم جميعاً النقاط الرئيسية.", you_tr: { ur: "شاندار جواب! آپ سب کو اہم نکات یاد رہے۔", kn: "ಅದ್ಭುತ ಉತ್ತರ! ನೀವೆಲ್ಲರೂ ಮುಖ್ಯ ಅಂಶಗಳನ್ನು ನೆನಪಿಸಿಕೊಂಡಿದ್ದೀರಿ.", hi: "शानदार उत्तर! आप सभी को मुख्य बिंदु याद रहे।" }, opp: "Thank you Teacher, revision makes everything clear.", opp_ar: "شكراً لك يا أستاذ، المراجعة تجعل كل شيء واضحاً.", opp_tr: { ur: "شکریہ استاد، دہرانے سے سب کچھ صاف ہو جاتا ہے۔", kn: "ಧನ್ಯವಾದಗಳು ಶಿಕ್ಷಕರೇ, ಪುನರಾವರ್ತನೆಯು ಎಲ್ಲವನ್ನೂ ಸ್ಪಷ್ಟಪಡಿಸುತ್ತದೆ.", hi: "धन्यवाद शिक्षक, दोहराने से सब कुछ स्पष्ट हो जाता है।" } }
+          ]
+        },
+        // Page 7: Pair Work & Group Speaking Activity
+        {
+          title: "Organizing Pair Speaking Activity",
+          turns: [
+            { you: "Now turn to your bench partner and practice a two-minute dialogue.", you_ar: "الآن التفتوا إلى زميلكم في المقعد وتدربوا على حوار لمدة دقيقتين.", you_tr: { ur: "اب اپنے ساتھ بیٹھے ساتھی کی طرف مڑیں اور دو منٹ کے مکالمے کی مشق کریں۔", kn: "ಈಗ ನಿಮ್ಮ ಪಕ್ಕದ ಬೆಂಚ್ ಗೆಳೆಯನ ಕಡೆಗೆ ತಿರುಗಿ ಎರಡು ನಿಮಿಷಗಳ ಸಂಭಾಷಣೆಯನ್ನು ಅಭ್ಯಾಸ ಮಾಡಿ.", hi: "अब अपने बगल वाले साथी की ओर मुड़ें और दो मिनट के संवाद का अभ्यास करें।" }, opp: "Teacher, should we ask each other about our daily routine?", opp_ar: "يا أستاذ، هل نسأل بعضنا البعض عن روتيننا اليومي؟", opp_tr: { ur: "استاد، کیا ہم ایک دوسرے سے اپنے روزمرہ کے معمولات کے بارے میں پوچھیں؟", kn: "ಶಿಕ್ಷಕರೇ, ನಮ್ಮ ದೈನಂದಿನ ದಿನಚರಿಯ ಬಗ್ಗೆ ಒಬ್ಬರಿಗೊಬ್ಬರು ಕೇಳಬೇಕೇ?", hi: "शिक्षक, क्या हम एक-दूसरे से अपनी दिनचर्या के बारे में पूछें?" } },
+            { you: "Yes! Ask five questions each and answer in complete sentences.", you_ar: "نعم! اسألوا خمسة أسئلة لكل منكم وأجيبوا بجمل كاملة.", you_tr: { ur: "جی ہاں! ہر ایک پانچ سوال پوچھے اور مکمل جملوں میں جواب دے۔", kn: "ಹೌದು! ಪ್ರತಿಯೊಬ್ಬರೂ ಐದು ಪ್ರಶ್ನೆಗಳನ್ನು ಕೇಳಿ ಮತ್ತು ಪೂರ್ಣ ವಾಕ್ಯಗಳಲ್ಲಿ ಉತ್ತರಿಸಿ.", hi: "हाँ! प्रत्येक पाँच प्रश्न पूछें और पूर्ण वाक्यों में उत्तर दें।" }, opp: "Okay Teacher, we are starting our pair practice now.", opp_ar: "حسناً يا أستاذ، نحن نبدأ تدريبنا الثنائي الآن.", opp_tr: { ur: "ٹھیک ہے استاد، ہم اب اپنی جوڑی کی مشق شروع کر رہے ہیں۔", kn: "ಸರಿ ಶಿಕ್ಷಕರೇ, ನಾವು ಈಗ ನಮ್ಮ ಜೋಡಿ ಅಭ್ಯಾಸವನ್ನು ಪ್ರಾರಂಭಿಸುತ್ತಿದ್ದೇವೆ.", hi: "ठीक है शिक्षक, हम अभी अपना जोड़ी अभ्यास शुरू कर रहे हैं।" } },
+            { you: "Speak only in English during this activity; I am listening to every group.", you_ar: "تحدثوا بالإنجليزية فقط خلال هذا النشاط؛ أنا أستمع إلى كل مجموعة.", you_tr: { ur: "اس سرگرمی کے دوران صرف انگلش میں بات کریں؛ میں ہر گروپ کو سن رہا ہوں۔", kn: "ಈ ಚಟುವಟಿಕೆಯ ಸಮಯದಲ್ಲಿ ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿ ಮಾತ್ರ ಮಾತನಾಡಿ; ನಾನು ಪ್ರತಿಯೊಂದು ಗುಂಪನ್ನು ಆಲಿಸುತ್ತಿದ್ದೇನೆ.", hi: "इस गतिविधि के दौरान केवल अंग्रेज़ी में बात करें; मैं हर समूह को सुन रहा हूँ।" }, opp: "We will speak 100% in English, Teacher!", opp_ar: "سنتحدث بنسبة مئة بالمئة باللغة الإنجليزية يا أستاذ!", opp_tr: { ur: "ہم سو فیصد انگلش میں بات کریں گے، استاد!", kn: "ನಾವು ನೂರಕ್ಕೆ ನೂರು ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿ ಮಾತನಾಡುತ್ತೇವೆ, ಶಿಕ್ಷಕರೇ!", hi: "हम सौ प्रतिशत अंग्रेज़ी में बात करेंगे, शिक्षक!" } }
+          ]
+        },
+        // Page 8: Polite Classroom Discipline
+        {
+          title: "Maintaining Classroom Discipline Politely",
+          turns: [
+            { you: "Attention please! Let us keep our voices low so other classes are not disturbed.", you_ar: "انتباه من فضلكم! دعونا نخفض أصواتنا حتى لا ننزعج الفصول الأخرى.", you_tr: { ur: "توجہ فرمائیں! آئیں اپنی آواز دھیمی رکھیں تاکہ دوسری کلاسز ڈسٹرب نہ ہوں۔", kn: "ದಯವಿಟ್ಟು ಗಮನಿಸಿ! ಇತರ ತರಗತಿಗಳಿಗೆ ತೊಂದರೆಯಾಗದಂತೆ ನಮ್ಮ ಧ್ವನಿಯನ್ನು ತಗ್ಗಿಸೋಣ.", hi: "कृपया ध्यान दें! आइए अपनी आवाज़ धीमी रखें ताकि अन्य कक्षाओं को परेशानी न हो।" }, opp: "Sorry Teacher, we will speak softly from now on.", opp_ar: "آسفون يا أستاذ، سنتحدث بهدوء من الآن فصاعداً.", opp_tr: { ur: "معاف کیجئے استاد، اب سے ہم آہستہ آواز میں بات کریں گے۔", kn: "ಕ್ಷಮಿಸಿ ಶಿಕ್ಷಕರೇ, ಇನ್ನು ಮುಂದೆ ನಾವು ಮೃದುವಾಗಿ ಮಾತನಾಡುತ್ತೇವೆ.", hi: "माफ़ कीजिए शिक्षक, अब से हम धीमे स्वर में बात करेंगे।" } },
+            { you: "Raise your hand before speaking when someone else is answering.", you_ar: "ارفعوا أيديكم قبل التحدث عندما يجيب شخص آخر.", you_tr: { ur: "جب کوئی دوسرا جواب دے رہا ہو تو بولنے سے پہلے اپنا ہاتھ اٹھائیں۔", kn: "ಬೇರೊಬ್ಬರು ಉತ್ತರಿಸುತ್ತಿರುವಾಗ ಮಾತನಾಡುವ ಮೊದಲು ನಿಮ್ಮ ಕೈ ಎತ್ತಿ.", hi: "जब कोई और उत्तर दे रहा हो तो बोलने से पहले अपना हाथ उठाएँ।" }, opp: "Yes Teacher, we will wait for our turn politely.", opp_ar: "نعم يا أستاذ، سننتظر دورنا بأدب.", opp_tr: { ur: "جی ہاں استاد، ہم شائستگی سے اپنی باری کا انتظار کریں گے۔", kn: "ಹೌದು ಶಿಕ್ಷಕರೇ, ನಾವು ಸೌಜನ್ಯದಿಂದ ನಮ್ಮ ಸರದಿಗಾಗಿ ಕಾಯುತ್ತೇವೆ.", hi: "हाँ शिक्षक, हम विनम्रतापूर्वक अपनी बारी की प्रतीक्षा करेंगे।" } },
+            { you: "Thank you for your cooperation. Good manners make great learners.", you_ar: "شكراً لتعاونكم. الأخلاق الحميدة تصنع متعلمين رائعين.", you_tr: { ur: "تعاون کا شکریہ۔ اچھے آداب بہترین طالب علم بناتے ہیں۔", kn: "ನಿಮ್ಮ ಸಹಕಾರಕ್ಕೆ ಧನ್ಯವಾದಗಳು. ಒಳ್ಳೆಯ ನಡವಳಿಕೆ ಉತ್ತಮ ಕಲಿಯುವವರನ್ನು ರೂಪಿಸುತ್ತದೆ.", hi: "आपके सहयोग के लिए धन्यवाद। अच्छे संस्कार बेहतरीन शिक्षार्थी बनाते हैं।" }, opp: "We will always follow classroom etiquette, Teacher.", opp_ar: "سنتبع دائماً آداب الفصل الدراسي يا أستاذ.", opp_tr: { ur: "ہم ہمیشہ کلاس روم کے آداب کی پابندی کریں گے، استاد۔", kn: "ನಾವು ಯಾವಾಗಲೂ ತರಗತಿಯ ಶಿಷ್ಟಾಚಾರವನ್ನು ಅನುಸರಿಸುತ್ತೇವೆ, ಶಿಕ್ಷಕರೇ.", hi: "हम हमेशा कक्षा के शिष्टाचार का पालन करेंगे, शिक्षक।" } }
+          ]
+        },
+        // Page 9: Preparing for Oral Test & Exam
+        {
+          title: "Preparing Students for Oral Speaking Test",
+          turns: [
+            { you: "Tomorrow we will have a short five-minute oral speaking test.", you_ar: "غداً سيكون لدينا اختبار تحدث شفهي قصير لمدة خمس دقائق.", you_tr: { ur: "کل ہمارا پانچ منٹ کا مختصر زبانی اسپیکنگ ٹیسٹ ہوگا۔", kn: "ನಾಳೆ ನಮಗೆ ಐದು ನಿಮಿಷಗಳ ಕಿರು ಮೌಖಿಕ ಮಾತನಾಡುವ ಪರೀಕ್ಷೆ ಇರುತ್ತದೆ.", hi: "कल हमारा पाँच मिनट का संक्षिप्त मौखिक स्पीकिंग टेस्ट होगा।" }, opp: "Teacher, which topics should we revise tonight?", opp_ar: "يا أستاذ، ما هي المواضيع التي يجب أن نراجعها الليلة؟", opp_tr: { ur: "استاد، آج رات ہمیں کن موضوعات کی دہرائی کرنی چاہیے؟", kn: "ಶಿಕ್ಷಕರೇ, ಇಂದು ರಾತ್ರಿ ನಾವು ಯಾವ ವಿಷಯಗಳನ್ನು ಪುನರಾವರ್ತಿಸಬೇಕು?", hi: "शिक्षक, आज रात हमें किन विषयों का रिवीजन करना चाहिए?" } },
+            { you: "Revise self-introduction, polite requests, and daily routine sentences.", you_ar: "راجعوا التعريف بالنفس، والطلبات المهذبة، وجمل الروتين اليومي.", you_tr: { ur: "اپنا تعارف، شائستہ درخواستیں، اور روزمرہ معمولات کے جملے دہرائیں۔", kn: "ಸ್ವಯಂ ಪರಿಚಯ, ಸೌಜನ್ಯಯುತ ವಿನಂತಿಗಳು ಮತ್ತು ದೈನಂದಿನ ದಿನಚರಿಯ ವಾಕ್ಯಗಳನ್ನು ಪುನರಾವರ್ತಿಸಿ.", hi: "आत्म-परिचय, विनम्र अनुरोध और दैनिक दिनचर्या के वाक्यों को दोहराएँ।" }, opp: "Will you also ask us questions in Arabic and English?", opp_ar: "هل ستسألنا أيضاً أسئلة باللغتين العربية والإنجليزية؟", opp_tr: { ur: "کیا آپ ہم سے عربی اور انگلش دونوں میں سوال پوچھیں گے؟", kn: "ನೀವು ನಮಗೆ ಅರೇಬಿಕ್ ಮತ್ತು ಇಂಗ್ಲಿಷ್ ಎರಡರಲ್ಲೂ ಪ್ರಶ್ನೆಗಳನ್ನು ಕೇಳುತ್ತೀರಾ?", hi: "क्या आप हमसे अरबी और अंग्रेज़ी दोनों में प्रश्न पूछेंगे?" } },
+            { you: "Yes! Practice speaking out loud in front of a mirror at home.", you_ar: "نعم! تدربوا على التحدث بصوت عالٍ أمام المرآة في المنزل.", you_tr: { ur: "جی ہاں! گھر پر آئینے کے سامنے اونچی آواز میں بولنے کی مشق کریں۔", kn: "ಹೌದು! ಮನೆಯಲ್ಲಿ ಕನ್ನಡಿಯ ಮುಂದೆ ಗಟ್ಟಿಯಾಗಿ ಮಾತನಾಡುವುದನ್ನು ಅಭ್ಯಾಸ ಮಾಡಿ.", hi: "हाँ! घर पर शीशे के सामने ज़ोर से बोलने का अभ्यास करें।" }, opp: "We will practice well and score full marks, Teacher!", opp_ar: "سنتدرب جيداً ونحصل على الدرجات الكاملة يا أستاذ!", opp_tr: { ur: "ہم اچھی مشق کریں گے اور پورے نمبر لائیں گے، استاد!", kn: "ನಾವು ಚೆನ್ನಾಗಿ ಅಭ್ಯಾಸ ಮಾಡಿ ಪೂರ್ಣ ಅಂಕಗಳನ್ನು ಗಳಿಸುತ್ತೇವೆ, ಶಿಕ್ಷಕರೇ!", hi: "हम अच्छा अभ्यास करेंगे और पूरे अंक लाएँगे, शिक्षक!" } }
+          ]
+        },
+        // Page 10: Closing Class, Homework & Goodbye
+        {
+          title: "Appreciation, Homework & Closing Class",
+          turns: [
+            { you: "Time is up for today! You all did a fantastic job in class.", you_ar: "انتهى الوقت لليوم! لقد قمتم جميعاً بعمل رائع في الفصل.", you_tr: { ur: "آج کا وقت ختم ہوا! آپ سب نے کلاس میں شاندار کارکردگی دکھائی۔", kn: "ಇಂದಿನ ಸಮಯ ಮುಗಿದಿದೆ! ನೀವೆಲ್ಲರೂ ತರಗತಿಯಲ್ಲಿ ಅದ್ಭುತ ಕೆಲಸ ಮಾಡಿದ್ದೀರಿ.", hi: "आज का समय समाप्त हुआ! आप सभी ने कक्षा में शानदार काम किया।" }, opp: "Thank you Teacher, we learned many useful expressions today.", opp_ar: "شكراً لك يا أستاذ، تعلمنا اليوم العديد من التعبيرات المفيدة.", opp_tr: { ur: "شکریہ استاد، آج ہم نے بہت سے مفید جملے سیکھے۔", kn: "ಧನ್ಯವಾದಗಳು ಶಿಕ್ಷಕರೇ, ಇಂದು ನಾವು ಅನೇಕ ಉಪಯುಕ್ತ ಅಭಿವ್ಯಕ್ತಿಗಳನ್ನು ಕಲಿತಿದ್ದೇವೆ.", hi: "धन्यवाद शिक्षक, आज हमने कई उपयोगी वाक्य सीखे।" } },
+            { you: "For homework, write ten sentences about your family and bring them tomorrow.", you_ar: "للواجب المنزلي، اكتبوا عشر جمل عن عائلتكم وأحضروها غداً.", you_tr: { ur: "ہوم ورک کے لیے اپنے خاندان کے بارے میں دس جملے لکھیں اور کل لے کر آئیں۔", kn: "ಮನೆಕೆಲಸಕ್ಕಾಗಿ, ನಿಮ್ಮ ಕುಟುಂಬದ ಬಗ್ಗೆ ಹತ್ತು ವಾಕ್ಯಗಳನ್ನು ಬರೆದು ನಾಳೆ ತನ್ನಿ.", hi: "होमवर्क के लिए अपने परिवार के बारे में दस वाक्य लिखें और कल लेकर आएँ।" }, opp: "We have noted down the homework clearly, Teacher.", opp_ar: "لقد دونّا الواجب المنزلي بوضوح يا أستاذ.", opp_tr: { ur: "ہم نے ہوم ورک صاف طور پر نوٹ کر لیا ہے، استاد۔", kn: "ನಾವು ಮನೆಕೆಲಸವನ್ನು ಸ್ಪಷ್ಟವಾಗಿ ಬರೆದುಕೊಂಡಿದ್ದೇವೆ, ಶಿಕ್ಷಕರೇ.", hi: "हमने होमवर्क स्पष्ट रूप से नोट कर लिया है, शिक्षक।" } },
+            { you: "Pack your bags quietly and have a safe journey home. See you tomorrow!", you_ar: "احزموا حقائبكم بهدوء وأتمنى لكم عودة آمنة إلى المنزل. أراكم غداً!", you_tr: { ur: "خاموشی سے اپنے بیگ پیک کریں اور خیریت سے گھر جائیں۔ کل ملتے ہیں!", kn: "ನಿಮ್ಮ ಬ್ಯಾಗ್‌ಗಳನ್ನು ಶಾಂತವಾಗಿ ಪ್ಯಾಕ್ ಮಾಡಿ ಮತ್ತು ಸುರಕ್ಷಿತವಾಗಿ ಮನೆಗೆ ತಲುಪಿ. ನಾಳೆ ಸಿಗೋಣ!", hi: "शांति से अपने बैग पैक करें और सुरक्षित घर जाएँ। कल मिलते हैं!" }, opp: "Goodbye Teacher! Have a wonderful evening.", opp_ar: "مع السلامة يا أستاذ! أتمنى لك مساءً سعيداً.", opp_tr: { ur: "اللہ حافظ استاد! آپ کی شام خوشگوار گزرے۔", kn: "ವಿದಾಯ ಶಿಕ್ಷಕರೇ! ಶುಭ ಸಂಜೆ.", hi: "अलविदा शिक्षक! आपकी शाम शुभ हो।" } }
+          ]
+        }
+      ],
+
+      /* STUDENT ROLE: 10 UNIQUE REAL-LIFE PAGES */
+      student: [
+        { title: "Entering Class & Greeting Teacher", turns: [
+          { you: "Good morning Teacher! May I come inside the classroom please?", you_ar: "صباح الخير يا أستاذ! هل يسمح لي بالدخول إلى الفصل من فضلك؟", you_tr: { ur: "صبح بخیر استاد! کیا میں کلاس روم کے اندر آ سکتا ہوں؟", kn: "ಶುಭೋದಯ ಶಿಕ್ಷಕರೇ! ನಾನು ತರಗತಿಯ ಒಳಗೆ ಬರಬಹುದೇ?", hi: "सुप्रभात शिक्षक! क्या मैं कक्षा के अंदर आ सकता हूँ?" }, opp: "Good morning! Yes, please come in and take your seat.", opp_ar: "صباح الخير! نعم، تفضل بالدخول واجلس في مقعدك.", opp_tr: { ur: "صبح بخیر! جی ہاں، اندر آئیں اور اپنی سیٹ پر بیٹھیں۔", kn: "ಶುಭೋದಯ! ಹೌದು, ಒಳಗೆ ಬಂದು ನಿನ್ನ ಸ್ಥಾನದಲ್ಲಿ ಕುಳಿತುಕೋ.", hi: "सुप्रभात! हाँ, अंदर आओ और अपनी सीट पर बैठ जाओ।" } },
+          { you: "Thank you Teacher! How are you doing today?", you_ar: "شكراً لك يا أستاذ! كيف حالك اليوم؟", you_tr: { ur: "شکریہ استاد! آج آپ کیسے ہیں؟", kn: "ಧನ್ಯವಾದಗಳು ಶಿಕ್ಷಕರೇ! ಇಂದು ನೀವು ಹೇಗಿದ್ದೀರಿ?", hi: "धन्यवाद शिक्षक! आज आप कैसे हैं?" }, opp: "I am doing great, thank you for asking.", opp_ar: "أنا بخير والحمد لله، شكراً لسؤالك.", opp_tr: { ur: "میں بالکل ٹھیک ہوں، پوچھنے کا شکریہ۔", kn: "ನಾನು ಚೆನ್ನಾಗಿದ್ದೇನೆ, ಕೇಳಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು.", hi: "मैं बिल्कुल ठीक हूँ, पूछने के लिए धन्यवाद।" } },
+          { you: "I am ready with my books and notebook for today's class.", you_ar: "أنا مستعد بكتبي ودفتر ملاحظاتي لحصة اليوم.", you_tr: { ur: "میں آج کی کلاس کے لیے اپنی کتابوں اور کاپی کے ساتھ تیار ہوں۔", kn: "ಇಂದಿನ ತರಗತಿಗೆ ನನ್ನ ಪುಸ್ತಕಗಳು ಮತ್ತು ನೋಟ್‌ಬುಕ್‌ನೊಂದಿಗೆ ನಾನು ಸಿದ್ಧನಿದ್ದೇನೆ.", hi: "मैं आज की कक्षा के लिए अपनी किताबों और नोटबुक के साथ तैयार हूँ।" }, opp: "Wonderful! Let us begin the lesson.", opp_ar: "رائع! دعنا نبدأ الدرس.", opp_tr: { ur: "شاندار! آئیں سبق شروع کرتے ہیں۔", kn: "ಅದ್ಭುತ! ಪಾಠವನ್ನು ಪ್ರಾರಂಭಿಸೋಣ.", hi: "शानदार! आइए पाठ शुरू करते हैं।" } }
+        ]},
+        { title: "Submitting Homework & Asking Doubts", turns: [
+          { you: "Teacher, here is my completed English homework notebook.", you_ar: "يا أستاذ، تفضل دفتر واجبي المنزلي المكتمل.", you_tr: { ur: "استاد، یہ میری مکمل انگلش ہوم ورک کاپی ہے۔", kn: "ಶಿಕ್ಷಕರೇ, ಇಲ್ಲಿ ನನ್ನ ಪೂರ್ಣಗೊಂಡ ಇಂಗ್ಲಿಷ್ ಮನೆಕೆಲಸದ ನೋಟ್‌ಬುಕ್ ಇದೆ.", hi: "शिक्षक, यह रही मेरी पूरी अंग्रेज़ी होमवर्क नोटबुक।" }, opp: "Very neat handwriting! Keep up the good effort.", opp_ar: "خط جميل جداً! استمر في هذا الجهد الجيد.", opp_tr: { ur: "بہت صاف لکھائی! اسی طرح محنت جاری رکھیں۔", kn: "ತುಂಬಾ ಅಚ್ಚುಕಟ್ಟಾದ ಕೈಬರಹ! ಒಳ್ಳೆಯ ಪ್ರಯತ್ನವನ್ನು ಮುಂದುವರಿಸು.", hi: "बहुत साफ़ लिखावट! इसी तरह अच्छा प्रयास जारी रखो।" } },
+          { you: "Could you please explain the difference between 'since' and 'for'?", you_ar: "هل يمكنك شرح الفرق بين 'منذ' و 'لمدة' من فضلك؟", you_tr: { ur: "کیا آپ براہ کرم 'since' اور 'for' کا فرق سمجھا سکتے ہیں؟", kn: "ದಯವಿಟ್ಟು 'since' ಮತ್ತು 'for' ನಡುವಿನ ವ್ಯತ್ಯಾಸವನ್ನು ವಿವರಿಸುತ್ತೀರಾ?", hi: "क्या आप कृपया 'since' और 'for' के बीच का अंतर समझा सकते हैं?" }, opp: "Sure! 'Since' is for exact start time, and 'for' is for duration.", opp_ar: "بالتأكيد! 'منذ' لبداية الوقت المحدد، و 'لمدة' للفترة الزمنية.", opp_tr: { ur: "ضرور! 'Since' مقررہ وقت کے آغاز کے لیے اور 'for' مدت کے لیے آتا ہے۔", kn: "ಖಂಡಿತ! 'Since' ನಿಖರವಾದ ಪ್ರಾರಂಭದ ಸಮಯಕ್ಕೆ, ಮತ್ತು 'for' ಅವಧಿಗೆ ಬಳಸಲಾಗುತ್ತದೆ.", hi: "ज़रूर! 'Since' निश्चित शुरुआती समय के लिए, और 'for' अवधि के लिए आता है।" } },
+          { you: "Now it is completely clear to me. Thank you so much!", you_ar: "الآن أصبح الأمر واضحاً تماماً بالنسبة لي. شكراً جزيلاً!", you_tr: { ur: "اب مجھے یہ پوری طرح سمجھ آ گیا ہے۔ بہت بہت شکریہ!", kn: "ಈಗ ಅದು ನನಗೆ ಸಂಪೂರ್ಣವಾಗಿ ಸ್ಪಷ್ಟವಾಗಿದೆ. ತುಂಬಾ ಧನ್ಯವಾದಗಳು!", hi: "अब यह मुझे पूरी तरह स्पष्ट हो गया है। बहुत-बहुत धन्यवाद!" }, opp: "You are always welcome to ask questions!", opp_ar: "أنت مرحب بك دائماً لطرح الأسئلة!", opp_tr: { ur: "سوال پوچھنے کے لیے آپ کا ہمیشہ خیر مقدم ہے!", kn: "ಪ್ರಶ್ನೆಗಳನ್ನು ಕೇಳಲು ನಿನಗೆ ಯಾವಾಗಲೂ ಸ್ವಾಗತ!", hi: "प्रश्न पूछने के लिए तुम्हारा हमेशा स्वागत है!" } }
+        ]}
+      ],
+
+      /* OFFICER ROLE: UNIQUE PAGES */
+      officer: [
+        { title: "Passport & Visa Verification Desk", turns: [
+          { you: "Good evening! May I see your passport and entry visa please?", you_ar: "مساء الخير! هل لي أن أرى جواز سفرك وتأشيرة الدخول من فضلك؟", you_tr: { ur: "شام بخیر! کیا میں آپ کا پاسپورٹ اور انٹری ویزا دیکھ سکتا ہوں؟", kn: "ಶುಭ ಸಂಜೆ! ದಯವಿಟ್ಟು ನಿಮ್ಮ ಪಾಸ್‌ಪೋರ್ಟ್ ಮತ್ತು ಪ್ರವೇಶ ವೀಸಾ ನೋಡಬಹುದೇ?", hi: "शुभ संध्या! क्या मैं आपका पासपोर्ट और एंट्री वीज़ा देख सकता हूँ?" }, opp: "Good evening Officer, here is my passport and visa copy.", opp_ar: "مساء الخير أيها الضابط، تفضل جواز سفري ونسخة التأشيرة.", opp_tr: { ur: "شام بخیر آفیسر، یہ میرا پاسپورٹ اور ویزا کاپی ہے۔", kn: "ಶುಭ ಸಂಜೆ ಆಫೀಸರ್, ಇಲ್ಲಿ ನನ್ನ ಪಾಸ್‌ಪೋರ್ಟ್ ಮತ್ತು ವೀಸಾ ಪ್ರತಿ ಇದೆ.", hi: "शुभ संध्या ऑफिसर, यह रहा मेरा पासपोर्ट और वीज़ा कॉपी।" } },
+          { you: "What is the main purpose of your visit today?", you_ar: "ما هو الغرض الرئيسي من زيارتك اليوم؟", you_tr: { ur: "آج آپ کے سفر کا بنیادی مقصد کیا ہے؟", kn: "ಇಂದು ನಿಮ್ಮ ಭೇಟಿಯ ಮುಖ್ಯ ಉದ್ದೇಶವೇನು?", hi: "आज आपकी यात्रा का मुख्य उद्देश्य क्या है?" }, opp: "I am visiting for business meetings and official work.", opp_ar: "أنا أزور البلاد لحضور اجتماعات عمل ومهام رسمية.", opp_tr: { ur: "میں بزنس میٹنگز اور سرکاری کام کے سلسلے میں آیا ہوں۔", kn: "ನಾನು ವ್ಯಾಪಾರ ಸಭೆಗಳು ಮತ್ತು ಅಧಿಕೃತ ಕೆಲಸಕ್ಕಾಗಿ ಭೇಟಿ ನೀಡುತ್ತಿದ್ದೇನೆ.", hi: "मैं बिज़नेस मीटिंग्स और आधिकारिक काम के लिए आया हूँ।" } },
+          { you: "Everything is verified. Welcome and have a pleasant stay!", you_ar: "تم التحقق من كل شيء. أهلاً بك ونتمنى لك إقامة سعيدة!", you_tr: { ur: "سب کچھ تصدیق ہو گیا ہے۔ خوش آمدید اور آپ کا قیام خوشگوار رہے!", kn: "ಎಲ್ಲವನ್ನೂ ಪರಿಶೀಲಿಸಲಾಗಿದೆ. ಸ್ವಾಗತ ಮತ್ತು ಸುಖಕರ ವಾಸ್ತವ್ಯವಿರಲಿ!", hi: "सब कुछ सत्यापित हो गया है। स्वागत है और आपका प्रवास सुखद रहे!" }, opp: "Thank you very much Officer!", opp_ar: "شكراً جزيلاً أيها الضابط!", opp_tr: { ur: "بہت بہت شکریہ آفیسر!", kn: "ತುಂಬಾ ಧನ್ಯವಾದಗಳು ಆಫೀಸರ್!", hi: "बहुत-बहुत धन्यवाद ऑफिसर!" } }
+        ]},
+        { title: "Customs, Baggage & Boarding Guidance", turns: [
+          { you: "Do you have any restricted items or extra baggage to declare?", you_ar: "هل لديك أي مواد محظورة أو أمتعة إضافية للإفصاح عنها؟", you_tr: { ur: "کیا آپ کے پاس کوئی ممنوعہ سامان یا اضافی بیگ ہے؟", kn: "ಘೋಷಿಸಲು ಯಾವುದೇ ನಿರ್ಬಂಧಿತ ವಸ್ತುಗಳು ಅಥವಾ ಹೆಚ್ಚುವರಿ ಲಗೇಜ್ ಇದೆಯೇ?", hi: "क्या आपके पास घोषित करने के लिए कोई प्रतिबंधित वस्तु या अतिरिक्त सामान है?" }, opp: "No Officer, I only have one cabin bag and one suitcase.", opp_ar: "لا أيها الضابط، لدي حقيبة يد واحدة وحقيبة سفر واحدة فقط.", opp_tr: { ur: "نہیں آفیسر، میرے پاس صرف ایک ہینڈ بیگ اور ایک سوٹ کیس ہے۔", kn: "ಇಲ್ಲ ಆಫೀಸರ್, ನನ್ನ ಬಳಿ ಕೇವಲ ಒಂದು ಕ್ಯಾಬಿನ್ ಬ್ಯಾಗ್ ಮತ್ತು ಒಂದು ಸೂಟ್‌ಕೇಸ್ ಇದೆ.", hi: "नहीं ऑफिसर, मेरे पास केवल एक केबिन बैग और एक सूटकेस है।" } },
+          { you: "Please place your luggage on the belt for quick scanning.", you_ar: "يرجى وضع أمتعتك على الحزام للفحص السريع.", you_tr: { ur: "جلدی اسکیننگ کے لیے اپنا سامان بیلٹ پر رکھیں۔", kn: "ತ್ವರಿತ ಸ್ಕ್ಯಾನಿಂಗ್‌ಗಾಗಿ ದಯವಿಟ್ಟು ನಿಮ್ಮ ಲಗೇಜ್ ಅನ್ನು ಬೆಲ್ಟ್ ಮೇಲೆ ಇರಿಸಿ.", hi: "त्वरित स्कैनिंग के लिए कृपया अपना सामान बेल्ट पर रखें।" }, opp: "Sure Officer, I have placed it on the conveyor belt.", opp_ar: "بالتأكيد أيها الضابط، لقد وضعتها على الحزام الناقل.", opp_tr: { ur: "ضرور آفیسر، میں نے اسے بیلٹ پر رکھ دیا ہے۔", kn: "ಖಂಡಿತ ಆಫೀಸರ್, ನಾನು ಅದನ್ನು ಬೆಲ್ಟ್ ಮೇಲೆ ಇರಿಸಿದ್ದೇನೆ.", hi: "ज़रूर ऑफिसर, मैंने इसे बेल्ट पर रख दिया है।" } },
+          { you: "All clear! Your boarding gate is straight ahead on the right.", you_ar: "كل شيء سليم! بوابة الصعود إلى الطائرة مباشرة أمامك على اليمين.", you_tr: { ur: "سب ٹھیک ہے! آپ کا بورڈنگ گیٹ سیدھے آگے دائیں طرف ہے۔", kn: "ಎಲ್ಲವೂ ಸರಿಯಾಗಿದೆ! ನಿಮ್ಮ ಬೋರ್ಡಿಂಗ್ ಗೇಟ್ ನೇರವಾಗಿ ಮುಂದೆ ಬಲಭಾಗದಲ್ಲಿದೆ.", hi: "सब ठीक है! आपका बोर्डिंग गेट सीधे आगे दाईं ओर है।" }, opp: "Thank you for your kind assistance!", opp_ar: "شكراً لك على مساعدتك اللطيفة!", opp_tr: { ur: "آپ کی مہربانی اور مدد کا شکریہ!", kn: "ನಿಮ್ಮ ದಯಾಪರ ಸಹಾಯಕ್ಕೆ ಧನ್ಯವಾದಗಳು!", hi: "आपकी सहायता के लिए धन्यवाद!" } }
+        ]}
+      ],
+
+      /* JOB SEEKER ROLE: UNIQUE PAGES */
+      job: [
+        { title: "Reception Check-In & First Impression", turns: [
+          { you: "Good morning! I am here for the ten o'clock interview with HR.", you_ar: "صباح الخير! أنا هنا لإجراء المقابلة في الساعة العاشرة مع الموارد البشرية.", you_tr: { ur: "صبح بخیر! میں ایچ آر کے ساتھ دس بجے کے انٹرویو کے لیے آیا ہوں۔", kn: "ಶುಭೋದಯ! ಎಚ್‌ಆರ್ ಅವರೊಂದಿಗೆ ಹತ್ತು ಗಂಟೆಯ ಸಂದರ್ಶನಕ್ಕಾಗಿ ನಾನು ಬಂದಿದ್ದೇನೆ.", hi: "सुप्रभात! मैं एचआर के साथ दस बजे के इंटरव्यू के लिए आया हूँ।" }, opp: "Good morning! May I check your name and updated CV please?", opp_ar: "صباح الخير! هل لي أن أتحقق من اسمك وسيرتك الذاتية المحدثة من فضلك؟", opp_tr: { ur: "صبح بخیر! کیا میں آپ کا نام اور تازہ سی وی چیک کر سکتی ہوں؟", kn: "ಶುಭೋದಯ! ದಯವಿಟ್ಟು ನಿಮ್ಮ ಹೆಸರು ಮತ್ತು ನವೀಕರಿಸಿದ ಸಿವಿ ಪರಿಶೀಲಿಸಬಹುದೇ?", hi: "सुप्रभात! क्या मैं आपका नाम और अपडेटेड सीवी जाँच सकती हूँ?" } },
+          { you: "Certainly, here is my CV and interview confirmation email.", you_ar: "بالتأكيد، تفضل سيرتي الذاتية ورسالة تأكيد المقابلة.", you_tr: { ur: "ضرور، یہ میرا سی وی اور انٹرویو کنفرمیشن ای میل ہے۔", kn: "ಖಂಡಿತ, ಇಲ್ಲಿ ನನ್ನ ಸಿವಿ ಮತ್ತು ಸಂದರ್ಶನ ದೃಢೀಕರಣ ಇಮೇಲ್ ಇದೆ.", hi: "निश्चित रूप से, यह रहा मेरा सीवी और इंटरव्यू पुष्टिकरण ईमेल।" }, opp: "Thank you! Please take a seat, they will call you in five minutes.", opp_ar: "شكراً لك! يرجى الجلوس، سينادونك خلال خمس دقائق.", opp_tr: { ur: "شکریہ! براہ کرم تشریف رکھیں، پانچ منٹ میں آپ کو بلایا جائے گا۔", kn: "ಧನ್ಯವಾದಗಳು! ದಯವಿಟ್ಟು ಕುಳಿತುಕೊಳ್ಳಿ, ಐದು ನಿಮಿಷಗಳಲ್ಲಿ ನಿಮ್ಮನ್ನು ಕರೆಯುತ್ತಾರೆ.", hi: "धन्यवाद! कृपया बैठिए, पाँच मिनट में आपको बुलाया जाएगा।" } },
+          { you: "Thank you so much for your warm welcome.", you_ar: "شكراً جزيلاً لك على حفاوة الاستقبال.", you_tr: { ur: "پرتپاک استقبال کے لیے بہت بہت شکریہ۔", kn: "ಆತ್ಮೀಯ ಸ್ವಾಗತಕ್ಕಾಗಿ ತುಂಬಾ ಧನ್ಯವಾದಗಳು.", hi: "आत्मीय स्वागत के लिए बहुत-बहुत धन्यवाद।" }, opp: "You are welcome, best of luck!", opp_ar: "على الرحب والسعة، حظاً موفقاً!", opp_tr: { ur: "خوش آمدید، نیک خواہشات!", kn: "ಸ್ವಾಗತ, ಶುಭವಾಗಲಿ!", hi: "स्वागत है, शुभकामनाएँ!" } }
+        ]},
+        { title: "HR Interview: Strengths & Communication", turns: [
+          { you: "Good morning Sir! Thank you for inviting me for this interview.", you_ar: "صباح الخير سيدي! شكراً لدعوتي لإجراء هذه المقابلة.", you_tr: { ur: "صبح بخیر سر! مجھے اس انٹرویو کے لیے بلانے کا بہت شکریہ۔", kn: "ಶುಭೋದಯ ಸರ್! ಈ ಸಂದರ್ಶನಕ್ಕೆ ನನ್ನನ್ನು ಆಹ್ವಾನಿಸಿದ್ದಕ್ಕಾಗಿ ಧನ್ಯವಾದಗಳು.", hi: "सुप्रभात सर! मुझे इस साक्षात्कार के लिए आमंत्रित करने के लिए धन्यवाद।" }, opp: "Welcome! Tell me about your strengths and language skills.", opp_ar: "أهلاً بك! أخبرني عن نقاط قوتك ومهاراتك اللغوية.", opp_tr: { ur: "خوش آمدید! اپنی خوبیوں اور زبان کی مہارتوں کے بارے میں بتائیں۔", kn: "ಸ್ವಾಗತ! ನಿಮ್ಮ ಶಕ್ತಿಗಳು ಮತ್ತು ಭಾಷಾ ಕೌಶಲ್ಯಗಳ ಬಗ್ಗೆ ಹೇಳಿ.", hi: "स्वागत है! अपनी ताकत और भाषा कौशल के बारे में बताइए।" } },
+          { you: "I am punctual, dedicated, and fluent in both English and Arabic.", you_ar: "أنا منضبط ومتفانٍ وأتحدث الإنجليزية والعربية بطلاقة.", you_tr: { ur: "میں وقت کا پابند، محنتی ہوں اور انگلش و عربی دونوں میں ماہر ہوں۔", kn: "ನಾನು ಸಮಯಪಾಲಕ, ಸಮರ್ಪಿತ ಮತ್ತು ಇಂಗ್ಲಿಷ್ ಹಾಗೂ ಅರೇಬಿಕ್ ಎರಡನ್ನೂ ನಿರರ್ಗಳವಾಗಿ ಮಾತನಾಡುತ್ತೇನೆ.", hi: "मैं समय का पाबंद, समर्पित हूँ और अंग्रेज़ी व अरबी दोनों धाराप्रवाह बोलता हूँ।" }, opp: "That is very valuable for our team. When can you join?", opp_ar: "هذا قيم جداً لفريقنا. متى يمكنك الانضمام إلينا؟", opp_tr: { ur: "یہ ہماری ٹیم کے لیے بہت قیمتی ہے۔ آپ کب جوائن کر سکتے ہیں؟", kn: "ಅದು ನಮ್ಮ ತಂಡಕ್ಕೆ ತುಂಬಾ ಮೌಲ್ಯಯುತವಾಗಿದೆ. ನೀವು ಯಾವಾಗ ಸೇರಬಹುದು?", hi: "यह हमारी टीम के लिए बहुत मूल्यवान है। आप कब शामिल हो सकते हैं?" } },
+          { you: "I can join immediately from next Sunday morning.", you_ar: "يمكنني الانضمام فوراً اعتباراً من صباح الأحد القادم.", you_tr: { ur: "میں اگلے اتوار کی صبح سے فوراً جوائن کر سکتا ہوں۔", kn: "ಮುಂದಿನ ಭಾನುವಾರ ಬೆಳಿಗ್ಗೆಯಿಂದ ನಾನು ತಕ್ಷಣ ಸೇರಬಹುದು.", hi: "मैं अगले रविवार की सुबह से तुरंत शामिल हो सकता हूँ।" }, opp: "Great! We will send your offer letter today.", opp_ar: "رائع! سنرسل لك خطاب العرض اليوم.", opp_tr: { ur: "شاندار! ہم آج ہی آپ کو آفر لیٹر بھیج دیں گے۔", kn: "ಅದ್ಭುತ! ನಾವು ಇಂದು ನಿಮ್ಮ ಆಫರ್ ಲೆಟರ್ ಕಳುಹಿಸುತ್ತೇವೆ.", hi: "शानदार! हम आज ही आपको ऑफ़र लेटर भेज देंगे।" } }
+        ]}
+      ],
+
+      /* PHONE CALL RECEIVER ROLE: UNIQUE PAGES */
+      phone: [
+        { title: "Customer Helpdesk Support Call", turns: [
+          { you: "Hello, SmartPage Helpdesk speaking! How may I assist you?", you_ar: "مرحباً، معك مكتب مساعدة سمارت بيج! كيف يمكنني خدمتك؟", you_tr: { ur: "ہیلو، اسمارٹ پیج ہیلپ ڈیسک سے بات کر رہا ہوں! میں آپ کی کیا مدد کر سکتا ہوں؟", kn: "ಹಲೋ, ಸ್ಮಾರ್ಟ್‌ಪೇಜ್ ಹೆಲ್ಪ್‌ಡೆಸ್ಕ್ ಮಾತನಾಡುತ್ತಿದೆ! ನಾನು ನಿಮಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಬಹುದು?", hi: "हेलो, स्मार्टपेज हेल्पडेस्क बोल रहा हूँ! मैं आपकी क्या सहायता कर सकता हूँ?" }, opp: "Hello! I want to join your English and Arabic speaking program.", opp_ar: "مرحباً! أريد الانضمام إلى برنامجكم للتحدث بالإنجليزية والعربية.", opp_tr: { ur: "ہیلو! میں آپ کے انگلش اور عربی اسپیکنگ پروگرام میں شامل ہونا چاہتا ہوں۔", kn: "ಹಲೋ! ನಿಮ್ಮ ಇಂಗ್ಲಿಷ್ ಮತ್ತು ಅರೇಬಿಕ್ ಮಾತನಾಡುವ ಕಾರ್ಯಕ್ರಮಕ್ಕೆ ಸೇರಲು ಬಯಸುತ್ತೇನೆ.", hi: "हेलो! मैं आपके अंग्रेज़ी और अरबी स्पीकिंग प्रोग्राम में शामिल होना चाहता हूँ।" } },
+          { you: "You can start Level 1 immediately on our SmartPage platform.", you_ar: "يمكنك بدء المستوى الأول فوراً على منصة سمارت بيج.", you_tr: { ur: "آپ ہمارے اسمارٹ پیج پلیٹ فارم پر فوراً لیول 1 شروع کر سکتے ہیں۔", kn: "ನಮ್ಮ ಸ್ಮಾರ್ಟ್‌ಪೇಜ್ ವೇದಿಕೆಯಲ್ಲಿ ನೀವು ತಕ್ಷಣ ಹಂತ 1 ಅನ್ನು ಪ್ರಾರಂಭಿಸಬಹುದು.", hi: "आप हमारे स्मार्टपेज प्लेटफ़ॉर्म पर तुरंत लेवल 1 शुरू कर सकते हैं।" }, opp: "Thank you so much for the clear guidance!", opp_ar: "شكراً جزيلاً لك على التوجيه الواضح!", opp_tr: { ur: "واضح رہنمائی کے لیے بہت بہت شکریہ!", kn: "ಸ್ಪಷ್ಟ ಮಾರ್ಗದರ್ಶನಕ್ಕಾಗಿ ತುಂಬಾ ಧನ್ಯವಾದಗಳು!", hi: "स्पष्ट मार्गदर्शन के लिए बहुत-बहुत धन्यवाद!" } },
+          { you: "You are most welcome! Have a wonderful day ahead.", you_ar: "على الرحب والسعة! أتمنى لك يوماً سعيداً.", you_tr: { ur: "خوش آمدید! آپ کا دن شاندار گزرے۔", kn: "ಸ್ವಾಗತ! ಶುಭ ದಿನ.", hi: "स्वागत है! आपका दिन शुभ हो।" }, opp: "Goodbye!", opp_ar: "مع السلامة!", opp_tr: { ur: "اللہ حافظ!", kn: "ವಿದಾಯ!", hi: "अलविदा!" } }
+        ]},
+        { title: "Clinic Appointment & Timing Call", turns: [
+          { you: "City Medical Center, good afternoon! How can I help you?", you_ar: "المركز الطبي بالمدينة، مساء الخير! كيف يمكنني مساعدتك؟", you_tr: { ur: "سٹی میڈیکل سینٹر، سہ پہر بخیر! میں آپ کی کیا مدد کر سکتا ہوں؟", kn: "ಸಿಟಿ ಮೆಡಿಕಲ್ ಸೆಂಟರ್, ಶುಭ ಮಧ್ಯಾಹ್ನ! ನಾನು ನಿಮಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಬಹುದು?", hi: "सिटी मेडिकल सेंटर, शुभ दोपहर! मैं आपकी क्या मदद कर सकता हूँ?" }, opp: "I would like to book an evening appointment with the doctor.", opp_ar: "أود حجز موعد مسائي مع الطبيب.", opp_tr: { ur: "میں ڈاکٹر کے ساتھ شام کی اپائنٹمنٹ بک کرنا چاہتا ہوں۔", kn: "ವೈದ್ಯರೊಂದಿಗೆ ಸಂಜೆಯ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಕಾಯ್ದಿರಿಸಲು ಬಯಸುತ್ತೇನೆ.", hi: "मैं डॉक्टर के साथ शाम का अपॉइंटमेंट बुक करना चाहता हूँ।" } },
+          { you: "We have a slot open at six thirty PM today. Shall I confirm it?", you_ar: "لدينا موعد متاح في الساعة السادسة والنصف مساءً اليوم. هل أؤكده؟", you_tr: { ur: "آج شام ساڑھے چھ بجے کا وقت دستیاب ہے۔ کیا میں کنفرم کر دوں؟", kn: "ಇಂದು ಸಂಜೆ ಆರೂವರೆ ಗಂಟೆಗೆ ಸಮಯ ಲಭ್ಯವಿದೆ. ನಾನು ದೃಢೀಕರಿಸಲೇ?", hi: "आज शाम साढ़े छह बजे का समय उपलब्ध है। क्या मैं कन्फर्म कर दूँ?" } },
+          { you: "Your booking is confirmed. Please bring your ID card with you.", you_ar: "تم تأكيد حجزك. يرجى إحضار بطاقة هويتك معك.", you_tr: { ur: "آپ کی بکنگ کنفرم ہو گئی ہے۔ براہ کرم اپنا شناختی کارڈ ساتھ لائیں۔", kn: "ನಿಮ್ಮ ಬುಕಿಂಗ್ ದೃಢೀಕರಿಸಲಾಗಿದೆ. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಗುರುತಿನ ಚೀಟಿಯನ್ನು ತನ್ನಿ.", hi: "आपकी बुकिंग कन्फर्म हो गई है। कृपया अपना पहचान पत्र साथ लाएँ।" }, opp: "Thank you, I will be on time!", opp_ar: "شكراً لك، سأكون في الوقت المحدد!", opp_tr: { ur: "شکریہ، میں وقت پر آ جاؤں گا!", kn: "ಧನ್ಯವಾದಗಳು, ನಾನು ಸಮಯಕ್ಕೆ ಸರಿಯಾಗಿ ಬರುತ್ತೇನೆ!", hi: "धन्यवाद, मैं समय पर आ जाऊँगा!" } }
+        ]}
+      ]
+    };
+
+    const worlds = {
+      city: {
+        title: "Avatar: Level 1 Master Directory (150 A4 Pages)",
+        desc: "Select any Avatar below — each has 3 Categories × 10 Unique A4 Pages = 30 A4 Pages!",
+        mapTitle: "🗺️ LEVEL 1: SELECT YOUR AVATAR ROLE",
+        bg: "linear-gradient(180deg, #dcfce7 0%, #e0f2fe 100%)",
+        isRoot: true,
+        nodes: [
+          { icon: "👨‍🏫", name: "1. Teacher Avatar", sub: "3 Categories • 30 Unique A4 Pages", switchTo: "teacher" },
+          { icon: "🎒", name: "2. Student Avatar", sub: "3 Categories • 30 Unique A4 Pages", switchTo: "student" },
+          { icon: "👮‍♂️", name: "3. Officer Avatar", sub: "3 Categories • 30 Unique A4 Pages", switchTo: "officer" },
+          { icon: "💼", name: "4. Job Seeker Avatar", sub: "3 Categories • 30 Unique A4 Pages", switchTo: "job" },
+          { icon: "☎️", name: "5. Call Receiver Avatar", sub: "3 Categories • 30 Unique A4 Pages", switchTo: "phone" }
+        ]
+      },
+      teacher: {
+        title: "Avatar: School Teacher (30 Unique A4 Pages)",
+        desc: "Teacher leads questions & instructions across Classroom, Principal Office & Staff Room",
+        mapTitle: "👨‍🏫 TEACHER AVATAR — SELECT CATEGORY (10 UNIQUE PAGES EACH)",
+        bg: "linear-gradient(180deg, #fef9c3 0%, #fde68a 100%)",
+        isRoot: false,
+        zones: [
+          { icon: "🧑‍🎓", name: "1. Classroom (Ask Students)", sub: "10 Unique Classroom Lessons", opp: "🧑‍🎓", oppName: "Students", offset: 0 },
+          { icon: "🏛️", name: "2. Principal Office", sub: "10 Unique Academic Meetings", opp: "👩‍💼", oppName: "School Principal", offset: 3 },
+          { icon: "☕", name: "3. Staff Room", sub: "10 Unique Staff Discussions", opp: "👩‍🏫", oppName: "Colleague Teacher", offset: 6 }
+        ]
+      },
+      student: {
+        title: "Avatar: School Student (30 Unique A4 Pages)",
+        desc: "Student conversations across Classroom, School Bus & Playground Friends",
+        mapTitle: "🎒 STUDENT AVATAR — SELECT CATEGORY (10 UNIQUE PAGES EACH)",
+        bg: "linear-gradient(180deg, #e0f2fe 0%, #dbeafe 100%)",
+        isRoot: false,
+        zones: [
+          { icon: "🏫", name: "1. Classroom Bench", sub: "10 Unique Classroom Dialogues", opp: "👨‍🏫", oppName: "Class Teacher", offset: 0 },
+          { icon: "🚌", name: "2. School Bus & Gate", sub: "10 Unique Commute Dialogues", opp: "👮", oppName: "Bus Supervisor", offset: 1 },
+          { icon: "⚽", name: "3. Playground & Friends", sub: "10 Unique Friend Dialogues", opp: "🧒", oppName: "Best Friend", offset: 0 }
+        ]
+      },
+      officer: {
+        title: "Avatar: Airport & Bank Officer (30 Unique A4 Pages)",
+        desc: "Officer conversations across Passport Desk, Security & Bank Counter",
+        mapTitle: "👮‍♂️ OFFICER AVATAR — SELECT CATEGORY (10 UNIQUE PAGES EACH)",
+        bg: "linear-gradient(180deg, #e0f2fe 0%, #bae6fd 100%)",
+        isRoot: false,
+        zones: [
+          { icon: "🛂", name: "1. Passport Immigration", sub: "10 Unique Arrival Dialogues", opp: "🧳", oppName: "Traveler", offset: 0 },
+          { icon: "🛄", name: "2. Baggage Security", sub: "10 Unique Screening Dialogues", opp: "🎒", oppName: "Passenger", offset: 1 },
+          { icon: "🏦", name: "3. Bank Service Counter", sub: "10 Unique Banking Dialogues", opp: "🧑", oppName: "Bank Client", offset: 0 }
+        ]
+      },
+      job: {
+        title: "Avatar: Job Seeker (30 Unique A4 Pages)",
+        desc: "Candidate conversations across Reception, HR Cabin & Manager Meeting",
+        mapTitle: "💼 JOB SEEKER AVATAR — SELECT CATEGORY (10 UNIQUE PAGES EACH)",
+        bg: "linear-gradient(180deg, #f3e8ff 0%, #e9d5ff 100%)",
+        isRoot: false,
+        zones: [
+          { icon: "🛎️", name: "1. Office Reception", sub: "10 Unique Check-In Dialogues", opp: "💁‍♀️", oppName: "Receptionist", offset: 0 },
+          { icon: "🤝", name: "2. HR Interview Cabin", sub: "10 Unique Interview Dialogues", opp: "👨‍💼", oppName: "HR Manager", offset: 1 },
+          { icon: "📊", name: "3. Operations Manager", sub: "10 Unique Offer Dialogues", opp: "👩‍💼", oppName: "Operations Head", offset: 0 }
+        ]
+      },
+      phone: {
+        title: "Avatar: Phone Call Receiver (30 Unique A4 Pages)",
+        desc: "Answer ringing calls across Helpdesk, Friend Line & Clinic Booking",
+        mapTitle: "☎️ CALL RECEIVER AVATAR — SELECT LINE (10 UNIQUE PAGES EACH)",
+        bg: "linear-gradient(180deg, #ffe4e6 0%, #fecdd3 100%)",
+        isRoot: false,
+        zones: [
+          { icon: "📞", name: "1. Helpdesk Support Line", sub: "10 Unique Support Calls", opp: "🎧", oppName: "Customer Caller", isCall: true, offset: 0 },
+          { icon: "📲", name: "2. Friend & Family Call", sub: "10 Unique Personal Calls", opp: "😊", oppName: "Close Friend", isCall: true, offset: 1 },
+          { icon: "🏥", name: "3. Clinic Booking Line", sub: "10 Unique Medical Calls", opp: "🩺", oppName: "Patient Caller", isCall: true, offset: 0 }
+        ]
+      }
+    };
+
+    function updateStarsDisplay() {
+      document.getElementById('starsBadge').textContent = `⭐ Spoken: ${spokenCount}`;
+    }
+
+    function renderRoleStrip() {
+      const strip = document.getElementById('roleStrip');
+      strip.innerHTML = '';
+      roleLabels.forEach(r => {
+        const btn = document.createElement('button');
+        btn.className = 'role-chip' + (activeWorld === r.key ? ' active' : '');
+        btn.textContent = `${avatarsByGender[userGender][r.key]} ${r.label}`;
+        btn.onclick = () => switchAvatarWorld(r.key);
+        strip.appendChild(btn);
+      });
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('sp_support_lang', lang);
+      if (document.getElementById('a4LessonStage').classList.contains('active')) {
+        renderFullA4LessonSheet();
+      }
+    }
+
+    function setGender(gen) {
+      userGender = gen;
+      localStorage.setItem('sp_user_gender', gen);
+      switchAvatarWorld(activeWorld);
+    }
+
+    function switchAvatarWorld(worldKey) {
+      stopRinging();
+      activeWorld = worldKey;
+      activeZoneIndex = 0;
+      activeCatPage = 1;
+      activeTurnIdx = 0;
+
+      document.getElementById('mapContainer').style.display = 'block';
+      document.getElementById('a4LessonStage').classList.remove('active');
+      document.getElementById('callScreen').classList.remove('active');
+      renderRoleStrip();
+
+      const w = worlds[worldKey] || worlds.city;
+      const currentAvatarIcon = avatarsByGender[userGender][worldKey] || "🧑";
+      document.getElementById('mainAvatar').textContent = currentAvatarIcon;
+      document.getElementById('avatarRoleTitle').textContent = w.title;
+      document.getElementById('avatarRoleDesc').textContent = w.desc;
+      document.getElementById('bottomRoleStamp').textContent = `Role: ${worldKey.toUpperCase()}`;
+
+      const mapContainer = document.getElementById('mapContainer');
+      mapContainer.style.background = w.bg;
+      document.getElementById('mapTitle').textContent = w.mapTitle;
+      document.getElementById('cityResetBtn').style.display = w.isRoot ? 'none' : 'inline-block';
+
+      const grid = document.getElementById('mapGrid');
+      grid.innerHTML = '';
+
+      const items = w.isRoot ? w.nodes : w.zones;
+      items.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'loc-node';
+        const pillText = w.isRoot ? '3 Categories • 30 Pages' : '10 Unique A4 Pages';
+        div.innerHTML = `
+          <span class="loc-icon">${item.icon}</span>
+          <div class="loc-name">${item.name}</div>
+          <div class="loc-sub">${item.sub}</div>
+          <span class="step-count-pill">${pillText}</span>
+        `;
+        div.onclick = () => {
+          if (item.switchTo) {
+            switchAvatarWorld(item.switchTo);
+          } else {
+            openCategoryZone(idx, div);
+          }
+        };
+        grid.appendChild(div);
+      });
+    }
+
+    function openCategoryZone(zoneIdx, element) {
+      activeZoneIndex = zoneIdx;
+      activeCatPage = 1;
+      activeTurnIdx = 0;
+      completedTurns = {};
+
+      const zone = worlds[activeWorld].zones[zoneIdx];
+      if (zone.isCall) {
+        pendingCallZoneIdx = zoneIdx;
+        element.classList.add('ringing');
+        document.getElementById('callerName').textContent = `${zone.name} Calling...`;
+        document.getElementById('callScreen').classList.add('active');
+        playRingTone();
+        return;
+      }
+      launchZoneA4Pages();
+    }
+
+    function answerPhoneCall() {
+      stopRinging();
+      document.getElementById('callScreen').classList.remove('active');
+      if (pendingCallZoneIdx !== null) {
+        activeZoneIndex = pendingCallZoneIdx;
+        launchZoneA4Pages();
+      }
+    }
+
+    function getPageObj(roleKey, zone, pageNum) {
+      const bank = tenDistinctPagesByRole[roleKey] || tenDistinctPagesByRole.teacher;
+      const idx = (pageNum - 1 + (zone.offset || 0)) % bank.length;
+      return bank[idx];
+    }
+
+    function launchZoneA4Pages() {
+      document.getElementById('mapContainer').style.display = 'none';
+      document.getElementById('a4LessonStage').classList.add('active');
+
+      const zone = worlds[activeWorld].zones[activeZoneIndex];
+      const sel = document.getElementById('catPageSelect');
+      sel.innerHTML = '';
+      for (let p = 1; p <= 10; p++) {
+        const pObj = getPageObj(activeWorld, zone, p);
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = `A4 Page ${p}: ${pObj.title}`;
+        sel.appendChild(opt);
+      }
+
+      renderFullA4LessonSheet();
+    }
+
+    function showZoneCardsAgain() {
+      stopRinging();
+      document.getElementById('a4LessonStage').classList.remove('active');
+      document.getElementById('mapContainer').style.display = 'block';
+    }
+
+    function renderFullA4LessonSheet() {
+      const zone = worlds[activeWorld].zones[activeZoneIndex];
+      const pageObj = getPageObj(activeWorld, zone, activeCatPage);
+      const currentAvatarIcon = avatarsByGender[userGender][activeWorld];
+
+      document.getElementById('zoneHeaderTitle').textContent = `${currentAvatarIcon} ${zone.name} — ${pageObj.title}`;
+      document.getElementById('catPageBadge').textContent = `A4 Page ${activeCatPage} / 10`;
+      document.getElementById('catPageSelect').value = activeCatPage;
+      document.getElementById('prevCatPageBtn').disabled = activeCatPage <= 1;
+      document.getElementById('nextCatPageBtn').disabled = activeCatPage >= 10;
+
+      const list = document.getElementById('fullA4DialoguesList');
+      list.innerHTML = '';
+
+      pageObj.turns.forEach((step, idx) => {
+        const turnKey = `${activeZoneIndex}-${activeCatPage}-${idx}`;
+        const isCurrent = idx === activeTurnIdx;
+        const isDone = !!completedTurns[turnKey];
+
+        const card = document.createElement('div');
+        card.className = 'dialogue-turn-card' + (isCurrent ? ' active-turn' : '');
+        card.innerHTML = `
+          <div class="turn-header">
+            <span>Page ${activeCatPage} • Dialogue #${idx + 1}</span>
+            <span>${isDone ? '✅ Spoken & Verified' : (isCurrent ? '👉 Your Turn to Speak' : 'Practice Ready')}</span>
+          </div>
+
+          <div class="you-speak-block">
+            <div class="speaker-tag">${currentAvatarIcon} You (${activeWorld.toUpperCase()}) Speak / Ask:</div>
+            <div class="en-line">"${step.you}"</div>
+            <div class="ar-line">${step.you_ar}</div>
+            <div class="tr-line">${step.you_tr[currentLang]}</div>
+          </div>
+
+          <div class="opp-reply-block">
+            <div class="opp-tag">${zone.opp} ${zone.oppName} Replies:</div>
+            <div class="en-line" style="font-size:14px; color:#1e293b;">"${step.opp}"</div>
+            <div class="ar-line" style="font-size:15px;">${step.opp_ar}</div>
+            <div class="tr-line">${step.opp_tr[currentLang]}</div>
+          </div>
+
+          <div class="turn-controls">
+            <div>
+              <button class="mini-btn" onclick="speakLine(\`${step.you.replace(/'/g, "\\'")}\`, 'en-US')">🔊 Hear EN</button>
+              <button class="mini-btn" onclick="speakLine(\`${step.you_ar.replace(/'/g, "\\'")}\`, 'ar-SA')">🔊 Hear AR</button>
+              <button class="mini-btn" onclick="speakLine(\`${step.opp.replace(/'/g, "\\'")}\`, 'en-US')">🔊 Hear Reply</button>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span class="turn-status" id="status-${idx}"></span>
+              <button class="speak-now-btn" id="mic-${idx}" onclick="speakTurn(${idx})">🎙️ Speak #${idx + 1}</button>
+            </div>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function changeCatPage(delta) {
+      const next = activeCatPage + delta;
+      if (next >= 1 && next <= 10) {
+        activeCatPage = next;
+        activeTurnIdx = 0;
+        renderFullA4LessonSheet();
+      }
+    }
+
+    function jumpCatPage(val) {
+      activeCatPage = parseInt(val, 10);
+      activeTurnIdx = 0;
+      renderFullA4LessonSheet();
+    }
+
+    function speakLine(text, langCode) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = langCode;
+      u.rate = 0.92;
+      window.speechSynthesis.speak(u);
+    }
+
+    function speakTurn(idx) {
+      const zone = worlds[activeWorld].zones[activeZoneIndex];
+      const pageObj = getPageObj(activeWorld, zone, activeCatPage);
+      const step = pageObj.turns[idx];
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const btn = document.getElementById('mic-' + idx);
+      const st = document.getElementById('status-' + idx);
+
+      if (!SR) {
+        markTurnCompleted(idx, step, pageObj.turns.length);
+        return;
+      }
+
+      const rec = new SR();
+      rec.lang = 'en-US';
+      btn.classList.add('listening');
+      btn.textContent = "Listening...";
+
+      rec.onresult = (e) => {
+        const spoken = e.results[0][0].transcript.toLowerCase().replace(/[^a-z\s]/g, '');
+        const expected = step.you.toLowerCase().replace(/[^a-z\s]/g, '');
+        const words = expected.split(' ');
+        const matched = words.filter(w => spoken.includes(w));
+        if (matched.length / words.length >= 0.45) {
+          markTurnCompleted(idx, step, pageObj.turns.length);
+        } else {
+          st.style.color = '#ea580c';
+          st.textContent = `Try again: "${e.results[0][0].transcript}"`;
+        }
+      };
+
+      rec.onend = () => {
+        btn.classList.remove('listening');
+        btn.textContent = `🎙️ Speak #${idx + 1}`;
+      };
+
+      rec.start();
+    }
+
+    function markTurnCompleted(idx, step, totalTurns) {
+      completedTurns[`${activeZoneIndex}-${activeCatPage}-${idx}`] = true;
+      spokenCount++;
+      localStorage.setItem('sp_spoken_count', spokenCount);
+      updateStarsDisplay();
+      speakLine(step.opp, 'en-US');
+      if (idx + 1 < totalTurns) {
+        activeTurnIdx = idx + 1;
+      }
+      renderFullA4LessonSheet();
+    }
+
+    function playRingTone() {
+      stopRinging();
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        ringInterval = setInterval(() => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(520, ctx.currentTime);
+          gain.gain.setValueAtTime(0.08, ctx.currentTime);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.22);
+        }, 650);
+      } catch (e) {}
+    }
+
+    function stopRinging() {
+      if (ringInterval) clearInterval(ringInterval);
+      document.querySelectorAll('.loc-node').forEach(n => n.classList.remove('ringing'));
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const startRole = urlParams.get('role') || 'city';
+    document.getElementById('genderSelect').value = userGender;
+    document.getElementById('langSelect').value = currentLang;
+    updateStarsDisplay();
+    switchAvatarWorld(worlds[startRole] ? startRole : 'city');
+  </script>
+</body>
+</html>

@@ -177,9 +177,11 @@
       category: "languages",
       catLabel: "🗣️ SPOKEN LANGUAGES",
       hasCert: true,
-      title: "30-Day Zero-to-Fluent Spoken English",
-      desc: "Step-by-step daily conversation, office communication, and interview mastery explained in 12 regional languages.",
-      pagesCount: 3,
+     title: "30-Day Master English & Universal Arabic",
+    desc: "30-Day A4 DigitalBook + 150-Page Adaptive Avatar City Map in English, Universal Arabic, Urdu, Kannada & Hindi.",
+    pagesCount: 30,
+    customUrl: "english-course.html",
+    mapUrl: "speaking-map.html",
       defaultLang: "en",
       pages: [
         {
@@ -366,7 +368,12 @@
         </div>
         <div>
           <div class="meta-line">📄 ${book.pagesCount} Interactive Pages • 12-Language Text</div>
+          ${book.customUrl ? `
+          <a href="${book.customUrl}" class="btn-open" style="display:block; text-align:center; text-decoration:none; margin-bottom:6px;">📖 Open 30-Day Book & Start Learning →</a>
+          <a href="${book.mapUrl}" class="btn-open" style="display:block; text-align:center; text-decoration:none; background:#065f46;">🗺️ Open Level 1 Speaking City Map →</a>
+        ` : `
           <button class="btn-open" onclick="openSelectedBook('${book.id}')">📖 Open Book & Start Learning →</button>
+        `}
         </div>
       </div>
     `).join("");
