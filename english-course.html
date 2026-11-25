@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartPage Royal A4 — 30-Day Master English Course</title>
+  <script src="course-data.js"></script>
+  <style>
+    :root {
+      --toolbar-bg: #d9dee4;
+      --toolbar-border: #b8c0c8;
+      --navy: #0f1e36;
+      --paper: #fdfcf7;
+      --gold: #b45309;
+      --emerald: #065f46;
+      --text: #111827;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body {
+      background: linear-gradient(135deg, #5d7485 0%, #8fa3b2 50%, #5d7485 100%);
+      min-height: 100vh;
+      padding: 12px 10px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Outer Reader Frame Matching SmartPage.html */
+    .reader-shell {
+      width: 100%;
+      max-width: 760px;
+      background: var(--toolbar-bg);
+      border: 1px solid #9ca3af;
+      border-radius: 8px;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+      overflow: hidden;
+    }
+
+    /* Row 1: Top Header Bar */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 12px;
+      background: #cfd6de;
+      border-bottom: 1px solid var(--toolbar-border);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy);
+      gap: 8px;
+    }
+    .top-left { display: flex; align-items: center; gap: 8px; }
+    .lib-btn {
+      background: #94a3b8;
+      color: #0f172a;
+      text-decoration: none;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .lib-btn:hover { background: #64748b; color: #fff; }
+    .book-meta { font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .top-right { display: flex; align-items: center; gap: 6px; }
+    .page-counter {
+      background: #e2e8f0;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid #94a3b8;
+      font-size: 11px;
+    }
+    .learner-pill {
+      background: #cbd5e1;
+      padding: 3px 9px;
+      border-radius: 12px;
+      border: 1px solid #94a3b8;
+      font-size: 11px;
+    }
+
+    /* Row 2: Single-Line Slim Action Toolbar */
+    .slim-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 5px;
+      padding: 6px 10px;
+      background: #e2e6ec;
+      border-bottom: 1px solid var(--toolbar-border);
+      overflow-x: auto;
+    }
+    .tb-group { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+    .tb-btn {
+      background: var(--navy);
+      color: #fff;
+      border: 1px solid #091324;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .tb-btn.light { background: #f8fafc; color: #0f172a; border: 1px solid #94a3b8; }
+    .tb-btn.map-btn { background: #065f46; color: #fef3c7; border: 1px solid #047857; }
+    .tb-select {
+      background: #f8fafc;
+      color: #0f172a;
+      border: 1px solid #94a3b8;
+      padding: 4px 7px;
+      border-radius: 5px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Collapsible Video / Audio Drawer */
+    .media-drawer {
+      display: none;
+      position: relative;
+      background: #0f172a;
+      padding: 14px;
+      border-bottom: 2px solid var(--navy);
+      text-align: center;
+    }
+    .media-drawer.open { display: block; }
+    .close-drawer-btn {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #000;
+      color: #fff;
+      border: 1.5px solid #fff;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 10;
+    }
+    .media-drawer video { width: 100%; max-height: 320px; border-radius: 6px; background: #000; }
+    .media-drawer audio { width: 92%; margin-top: 8px; }
+    .drawer-caption { color: #e2e8f0; font-size: 12px; margin-bottom: 8px; font-weight: 600; }
+
+    /* True Royal A4 Sheet Proportions & Crisp Border */
+    .a4-paper {
+      background: var(--paper);
+      width: calc(100% - 24px);
+      min-height: 920px;
+      margin: 12px auto;
+      padding: 28px 28px 24px;
+      border: 1px solid #94a3b8;
+      outline: 4px double #cbd5e1;
+      outline-offset: -8px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.14);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* A4 Header */
+    .paper-header {
+      text-align: center;
+      border-bottom: 2px solid var(--navy);
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+    }
+    .paper-top-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .paper-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.2px;
+    }
+    .goal-strip {
+      background: #f1f5f9;
+      border-left: 3px solid var(--gold);
+      padding: 6px 10px;
+      font-size: 12px;
+      color: #1e293b;
+      margin-top: 8px;
+      text-align: left;
+    }
+
+    /* Section Headings inside A4 Sheet */
+    .sec-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: var(--navy);
+      background: #e2e8f0;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin: 12px 0 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Strict 2-Language Lesson Rows (Master English + Selected Language Only) */
+    .lesson-row {
+      padding: 10px 4px;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+    .row-en {
+      font-size: 15.5px;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .row-selected {
+      font-size: 15.5px;
+      font-weight: 700;
+      color: var(--emerald);
+      margin-top: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .row-selected.rtl-mode {
+      direction: rtl;
+      text-align: right;
+      font-size: 17px;
+    }
+    .mini-audio {
+      background: #e2e8f0;
+      border: 1px solid #94a3b8;
+      color: #0f172a;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* Real-Life Mini Dialogue Box */
+    .dialogue-box {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-top: 6px;
+    }
+    .dlg-turn { margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px dotted #cbd5e1; }
+    .dlg-turn:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+    .dlg-speaker { font-size: 11px; font-weight: 800; color: var(--gold); text-transform: uppercase; }
+    .dlg-en { font-size: 14px; font-weight: 700; color: var(--navy); }
+    .dlg-sel { font-size: 14px; font-weight: 700; color: var(--emerald); margin-top: 2px; }
+    .dlg-sel.rtl-mode { direction: rtl; text-align: right; font-size: 15.5px; }
+
+    /* Key Vocabulary 2x2 Grid */
+    .vocab-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .vocab-item {
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      padding: 8px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+    .vocab-en { font-weight: 700; color: var(--navy); }
+    .vocab-sel { font-weight: 700; color: var(--emerald); }
+    .vocab-sel.rtl-mode { direction: rtl; }
+
+    /* Golden Tip & Mic Check Footer inside A4 */
+    .tip-box {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 12.5px;
+      color: #78350f;
+      margin-top: 12px;
+    }
+    .paper-footer-zone {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1.5px solid #cbd5e1;
+      text-align: center;
+    }
+    .mic-check-btn {
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      padding: 9px 18px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .mic-check-btn.listening { background: #dc2626; }
+    .feedback-line { font-size: 12px; font-weight: 700; margin-top: 5px; min-height: 16px; }
+    .a4-page-num-footer {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10.5px;
+      color: #64748b;
+      margin-top: 10px;
+      padding-top: 6px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    /* Exam & Certificate */
+    .exam-block {
+      border: 1px solid #94a3b8;
+      background: #fff;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+    .opt-choice {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      padding: 8px 10px;
+      border-radius: 4px;
+      margin-top: 6px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .opt-choice.selected { background: #dbeafe; border-color: #1d4ed8; font-weight: 700; }
+    .cert-frame {
+      display: none;
+      margin-top: 16px;
+      padding: 18px;
+      border: 4px double #b45309;
+      background: #fffbeb;
+      text-align: center;
+    }
+
+    /* Bottom Page Navigation Strip */
+    .bottom-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: #cfd6de;
+      border-top: 1px solid var(--toolbar-border);
+    }
+    .page-btn {
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+  <div class="reader-shell">
+    <!-- Row 1: SmartPage Header -->
+    <div class="top-bar">
+      <div class="top-left">
+        <a href="Library.html" class="lib-btn">← Library</a>
+        <span class="book-meta" id="headerMeta">30-DAY MASTER ENGLISH • PAGE 1</span>
+      </div>
+      <div class="top-right">
+        <span class="page-counter" id="pageCounter">1 / 30</span>
+        <span class="learner-pill">👤 Learner</span>
+      </div>
+    </div>
+
+    <!-- Row 2: Single-Line Slim Action Toolbar -->
+    <div class="slim-toolbar">
+      <div class="tb-group">
+        <button class="tb-btn" onclick="openMediaDrawer('video')">▶ Watch this page</button>
+        <button class="tb-btn" onclick="openMediaDrawer('audio')">🎧 Listen Lesson</button>
+        <button class="tb-btn light" onclick="playAllPageVoice()">🔊 Listen</button>
+        <a href="speaking-map.html" id="mapRoleLink" class="tb-btn map-btn">🗺️ Live Map</a>
+      </div>
+      <div class="tb-group">
+        <select class="tb-select" id="genderSelect" onchange="setGender(this.value)">
+          <option value="male">👨 Male</option>
+          <option value="female">👩 Female</option>
+        </select>
+        <select class="tb-select" id="langSelect" onchange="setSupportLang(this.value)">
+          <option value="hinglish">🇮🇳 Hindenglish</option>
+          <option value="ar">🇸🇦 Arabic (العربية)</option>
+          <option value="kn">🇰🇳 Kannada (ಕನ್ನಡ)</option>
+          <option value="ur">🇵🇰/🇮🇳 Urdu (اردو)</option>
+          <option value="hi">🇮🇳 Hindi (हिंदी)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Collapsible Video / Audio Drawer -->
+    <div class="media-drawer" id="mediaDrawer">
+      <button class="close-drawer-btn" onclick="closeMediaDrawer()" title="Close Player">✕</button>
+      <div class="drawer-caption" id="drawerCaption">Page Lesson Player</div>
+      <div id="drawerBody"></div>
+    </div>
+
+    <!-- Complete Full-Height Royal A4 Sheet -->
+    <div class="a4-paper">
+      <div>
+        <div class="paper-header">
+          <div class="paper-top-meta">
+            <span id="moduleSub">MODULE 1: FOUNDATION</span>
+            <span>SMARTPAGE ROYAL DIGITALBOOK</span>
+            <span id="topPageTag">PAGE 01 OF 30</span>
+          </div>
+          <div class="paper-title" id="lessonTitle">Greetings & First Impressions</div>
+          <div class="goal-strip" id="goalStrip">
+            <strong>🎯 Today's Speaking Goal:</strong> Master polite greetings and confident daily responses in English & your chosen language.
+          </div>
+        </div>
+
+        <div id="paperContent"></div>
+      </div>
+
+      <!-- Bottom A4 Page Footer -->
+      <div class="paper-footer-zone" id="paperFooterZone"></div>
+    </div>
+
+    <!-- Bottom Page Turner -->
+    <div class="bottom-nav">
+      <button class="page-btn" id="prevBtn" onclick="changePage(-1)">← Previous Page</button>
+      <select class="tb-select" id="pageJump" onchange="jumpToPage(this.value)"></select>
+      <button class="page-btn" id="nextBtn" onclick="changePage(1)">Next Page →</button>
+    </div>
+  </div>
+
+  <script>
+    let currentPage = parseInt(localStorage.getItem('sp_eng_page') || '1', 10);
+    let supportLang = localStorage.getItem('sp_support_lang') || 'hinglish';
+    let userGender = localStorage.getItem('sp_user_gender') || 'male';
+    let examAnswers = {};
+
+    const LANG_LABELS = {
+      hinglish: { badge: "Master EN + Hindenglish", voice: "hi-IN", rtl: false },
+      ar: { badge: "Master EN + Arabic", voice: "ar-SA", rtl: true },
+      kn: { badge: "Master EN + Kannada", voice: "kn-IN", rtl: false },
+      ur: { badge: "Master EN + Urdu", voice: "ur-PK", rtl: true },
+      hi: { badge: "Master EN + Hindi", voice: "hi-IN", rtl: false }
+    };
+
+    /* Pure Shuddh Hindenglish (Hindi in English script — NOT Urdu-English) */
+    const HINDENGLISH_DICT = {
+      "Hello, good morning! How are you today?": "Namaste, suprabhat! Aaj aap kaise hain?",
+      "I am doing very well, thank you.": "Main bilkul theek hoon, dhanyavaad.",
+      "Nice to meet you. Have a wonderful day!": "Aapse milkar khushi hui. Aapka din shubh ho!",
+      "My name is Azghar and I work in Saudi Arabia.": "Mera naam Azghar hai aur main Saudi Arabia mein kaam karta hoon.",
+      "I am learning English and Arabic to improve my skills.": "Main apne kaushal ko sudharne ke liye English aur Arabic seekh raha hoon.",
+      "I am happy to meet people from different countries.": "Mujhe vibhinn deshon ke logon se milkar khushi hoti hai.",
+      "Excuse me, what is your good name?": "Maaf kijiye, aapka shubh naam kya hai?",
+      "Where are you going right now?": "Aap is samay kahan ja rahe hain?",
+      "What time does the office open?": "Office kitne baje khulta hai?",
+      "Could you please help me for a moment?": "Kya aap kripya ek pal ke liye meri madad kar sakte hain?",
+      "I am sorry for the delay.": "Deri ke liye mujhe khed hai.",
+      "Thank you very much for your kind support.": "Aapke sahyog ke liye bahut-bahut dhanyavaad."
+    };
+
+    /* Smart Devanagari (s.hi) -> Pure Hindenglish Transliterator for all 30 pages */
+    function devanagariToHindenglish(hindiStr) {
+      if (!hindiStr) return "";
+      const consonants = {
+        'क':'k','ख':'kh','ग':'g','घ':'gh','ङ':'ng',
+        'च':'ch','छ':'chh','ज':'j','झ':'jh','ञ':'ny',
+        'ट':'t','ठ':'th','ड':'d','ढ':'dh','ण':'n',
+        'त':'t','थ':'th','द':'d','ध':'dh','न':'n',
+        'प':'p','फ':'ph','ब':'b','भ':'bh','म':'m',
+        'य':'y','र':'r','ल':'l','व':'v','श':'sh','ष':'sh','स':'s','ह':'h',
+        'क़':'q','ख़':'kh','ग़':'gh','ज़':'z','ड़':'r','ढ़':'rh','फ़':'f'
+      };
+      const vowels = {
+        'अ':'a','आ':'aa','इ':'i','ई':'ee','उ':'u','ऊ':'oo','ऋ':'ri',
+        'ए':'e','ऐ':'ai','ओ':'o','औ':'au','अं':'an','अः':'ah'
+      };
+      const matras = {
+        'ा':'aa','ि':'i','ी':'ee','ु':'u','ू':'oo','ृ':'ri',
+        'े':'e','ै':'ai','ो':'o','ौ':'au','ं':'n','ँ':'n','ः':'h','्':''
+      };
+      let out = "";
+      for (let i = 0; i < hindiStr.length; i++) {
+        const ch = hindiStr[i];
+        const next = hindiStr[i + 1];
+        if (vowels[ch]) {
+          out += vowels[ch];
+        } else if (consonants[ch]) {
+          out += consonants[ch];
+          if (next && matras[next] !== undefined) {
+            out += matras[next];
+            i++;
+          } else if (next && consonants[next] && next !== ' ' && !['।',',','?','!','.'].includes(next)) {
+            out += 'a';
+          }
+        } else if (matras[ch] !== undefined) {
+          out += matras[ch];
+        } else if (ch === '।') {
+          out += '.';
+        } else {
+          out += ch;
+        }
+      }
+      return out.replace(/\b\w/g, c => c.toUpperCase());
+    }
+
+    function getSentenceTranslation(s, lang) {
+      if (lang === 'hinglish') {
+        if (s.hinglish) return s.hinglish;
+        if (HINDENGLISH_DICT[s.en]) return HINDENGLISH_DICT[s.en];
+        if (s.hi) return devanagariToHindenglish(s.hi);
+        return s.en;
+      }
+      return s[lang] || s.en;
+    }
+
+    const extraA4Enrichment = {
+      vocab: [
+        { en: "Please", hinglish: "Kripya", ar: "من فضلك", kn: "ದಯವಿಟ್ಟು", ur: "براہ کرم", hi: "कृपया" },
+        { en: "Thank you", hinglish: "Dhanyavaad", ar: "شكراً لك", kn: "ಧನ್ಯವಾದಗಳು", ur: "شکریہ", hi: "धन्यवाद" },
+        { en: "Excuse me", hinglish: "Maaf kijiye", ar: "عفواً / لو سمحت", kn: "ಕ್ಷಮಿಸಿ", ur: "معاف کیجئے", hi: "माफ़ कीजिए" },
+        { en: "Welcome", hinglish: "Swagat hai", ar: "أهلاً وسهلاً", kn: "ಸ್ವಾಗತ", ur: "خوش آمدید", hi: "स्वागत है" }
+      ],
+      tip: {
+        hinglish: "💡 Sunehra Niyam: Bolte samay ghabrayein nahi—pehle poora vaakya sunein, phir saaf aawaaz mein dohraayein.",
+        ar: "💡 القاعدة الذهبية: لا تتردد عند التحدث—استمع أولاً إلى الجملة كاملة ثم كررها بصوت واضح.",
+        kn: "💡 ಸುವರ್ಣ ಸಲಹೆ: ಮಾತನಾಡುವಾಗ ಹಿಂಜರಿಯಬೇಡಿ—ಮೊದಲು ವಾಕ್ಯವನ್ನು ಆಲಿಸಿ, ನಂತರ ಸ್ಪಷ್ಟವಾಗಿ ಪುನರಾವರ್ತಿಸಿ.",
+        ur: "💡 سنہری اصول: بولتے وقت گھبرائیں نہیں—پہلے پورا جملہ سنیں، پھر آہستہ اور صاف آواز میں دہرائیں۔",
+        hi: "💡 सुनहरा नियम: बोलते समय घबराएँ नहीं—पहले पूरा वाक्य सुनें, फिर साफ़ आवाज़ में दोहराएँ।"
+      }
+    };
+
+    function init() {
+      const jump = document.getElementById('pageJump');
+      ENGLISH_COURSE_DATA.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.page;
+        opt.textContent = `Page ${item.page} ${item.type !== 'lesson' ? '(Exam)' : ''}`;
+        jump.appendChild(opt);
+      });
+      if (!LANG_LABELS[supportLang]) supportLang = 'hinglish';
+      document.getElementById('genderSelect').value = userGender;
+      document.getElementById('langSelect').value = supportLang;
+      renderPage();
+    }
+
+    function setSupportLang(lang) {
+      supportLang = lang;
+      localStorage.setItem('sp_support_lang', lang);
+      renderPage();
+    }
+
+    function setGender(gen) {
+      userGender = gen;
+      localStorage.setItem('sp_user_gender', gen);
+      renderPage();
+    }
+
+    function renderPage() {
+      closeMediaDrawer();
+      const data = ENGLISH_COURSE_DATA.find(p => p.page === currentPage) || ENGLISH_COURSE_DATA[0];
+      localStorage.setItem('sp_eng_page', currentPage);
+
+      document.getElementById('headerMeta').textContent = `30-DAY MASTER ENGLISH • PAGE ${data.page}`;
+      document.getElementById('pageCounter').textContent = `${data.page} / 30`;
+      document.getElementById('topPageTag').textContent = `PAGE ${String(data.page).padStart(2, '0')} OF 30`;
+      document.getElementById('moduleSub').textContent = data.module;
+      document.getElementById('lessonTitle').textContent = data.title;
+      document.getElementById('pageJump').value = currentPage;
+      document.getElementById('prevBtn').disabled = currentPage <= 1;
+      document.getElementById('nextBtn').disabled = currentPage >= 30;
+
+      if (data.mapRole) {
+        document.getElementById('mapRoleLink').href = `speaking-map.html?role=${data.mapRole}`;
+      }
+
+      const paper = document.getElementById('paperContent');
+      const footer = document.getElementById('paperFooterZone');
+      paper.innerHTML = '';
+      footer.innerHTML = '';
+
+      if (data.type === 'lesson') {
+        document.getElementById('goalStrip').style.display = 'block';
+        renderFullA4Lesson(data, paper, footer);
+      } else {
+        document.getElementById('goalStrip').style.display = 'none';
+        renderExamSheet(data, paper, footer);
+      }
+    }
+
+    function renderFullA4Lesson(data, paper, footer) {
+      const langMeta = LANG_LABELS[supportLang] || LANG_LABELS.hinglish;
+      const rtlClass = langMeta.rtl ? 'rtl-mode' : '';
+
+      // Section 1: Core Sentences (Strictly English + Selected Language ONLY)
+      paper.innerHTML += `<div class="sec-label"><span>Part 1: Core Daily Expressions</span><span>${langMeta.badge}</span></div>`;
+
+      data.sentences.forEach((s, idx) => {
+        const translatedText = getSentenceTranslation(s, supportLang);
+        const row = document.createElement('div');
+        row.className = 'lesson-row';
+        row.innerHTML = `
+          <div class="row-en">
+            <span>${idx + 1}. ${s.en}</span>
+            <button class="mini-audio" onclick="speakText(\`${s.en.replace(/'/g, "\\'")}\`, 'en-US')">🔊 EN</button>
+          </div>
+          <div class="row-selected ${rtlClass}">
+            <span>${translatedText}</span>
+            <button class="mini-audio" onclick="speakText(\`${translatedText.replace(/'/g, "\\'")}\`, '${langMeta.voice}')">🔊 Listen</button>
+          </div>
+        `;
+        paper.appendChild(row);
+      });
+
+      // Section 2: Real-Life Mini Conversation (Strictly English + Selected Language ONLY)
+      const s1 = data.sentences[0];
+      const s2 = data.sentences[1] || data.sentences[0];
+      const s3 = data.sentences[2] || data.sentences[0];
+
+      const t1 = getSentenceTranslation(s1, supportLang);
+      const t2 = getSentenceTranslation(s2, supportLang);
+      const t3 = getSentenceTranslation(s3, supportLang);
+
+      const dlgSection = document.createElement('div');
+      dlgSection.innerHTML = `
+        <div class="sec-label"><span>Part 2: Real-Life Conversation Practice</span><span>Roleplay</span></div>
+        <div class="dialogue-box">
+          <div class="dlg-turn">
+            <div class="dlg-speaker">Person A (Initiating):</div>
+            <div class="dlg-en">"${s1.en}"</div>
+            <div class="dlg-sel ${rtlClass}">${t1}</div>
+          </div>
+          <div class="dlg-turn">
+            <div class="dlg-speaker">Person B (Responding):</div>
+            <div class="dlg-en">"${s2.en} ${s3.en}"</div>
+            <div class="dlg-sel ${rtlClass}">${t2} ${t3}</div>
+          </div>
+        </div>
+      `;
+      paper.appendChild(dlgSection);
+
+      // Section 3: Key Vocabulary & Golden Tip (Strictly English + Selected Language ONLY)
+      const vocabHtml = extraA4Enrichment.vocab.map(v => `
+        <div class="vocab-item">
+          <div class="vocab-en">${v.en}</div>
+          <div class="vocab-sel ${rtlClass}">${v[supportLang] || v.hinglish}</div>
+        </div>
+      `).join('');
+
+      const vocabSection = document.createElement('div');
+      vocabSection.innerHTML = `
+        <div class="sec-label"><span>Part 3: Essential Vocabulary & Fluency Tip</span><span>Quick Reference</span></div>
+        <div class="vocab-grid">${vocabHtml}</div>
+        <div class="tip-box">${extraA4Enrichment.tip[supportLang] || extraA4Enrichment.tip.hinglish}</div>
+      `;
+      paper.appendChild(vocabSection);
+
+      // A4 Footer: Voice Check + Page Number Stamp
+      const target = s1.en;
+      footer.innerHTML = `
+        <button class="mic-check-btn" id="micBtn" onclick="verifySpeech(\`${target.replace(/'/g, "\\'")}\`, 'micFeedback', 'micBtn')">
+          🎙️ Speak Sentence #1 to Complete Page: "${target}"
+        </button>
+        <div class="feedback-line" id="micFeedback"></div>
+        <div class="a4-page-num-footer">
+          <span>SmartPage Royal Edition • Bilingual A4 Sheet</span>
+          <span>— Page ${data.page} of 30 —</span>
+        </div>
+      `;
+    }
+
+    function openMediaDrawer(mode) {
+      const drawer = document.getElementById('mediaDrawer');
+      const body = document.getElementById('drawerBody');
+      const caption = document.getElementById('drawerCaption');
+      const adminPages = window.ADMIN_ENGLISH_PAGES || [];
+      const pageObj = adminPages[currentPage - 1] || {};
+
+      drawer.classList.add('open');
+
+      if (mode === 'video') {
+        caption.textContent = `▶ Watching Page ${currentPage} Lesson`;
+        if (pageObj.videoUrl) {
+          body.innerHTML = `<video controls autoplay src="${pageObj.videoUrl}"></video>`;
+        } else {
+          body.innerHTML = `
+            <div style="color:#fbbf24; padding:18px 10px; font-size:13px;">
+              No custom video attached to Page ${currentPage} yet.<br>
+              <span style="color:#cbd5e1; font-size:12px;">Attach video in Admin Studio, or listen to the live AI lesson below:</span><br><br>
+              <button class="tb-btn" onclick="playAllPageVoice()">🔊 Play AI Voice Lesson Now</button>
+            </div>
+          `;
+        }
+      } else {
+        caption.textContent = `🎧 Listening to Page ${currentPage} Audio Lesson`;
+        if (pageObj.lessonAudioUrl) {
+          body.innerHTML = `<audio controls autoplay src="${pageObj.lessonAudioUrl}"></audio>`;
+        } else {
+          body.innerHTML = `<div style="color:#a7f3d0; padding:14px 10px; font-size:13px;">Playing Smart AI Bilingual Audio (English + Selected Language)...</div>`;
+          playAllPageVoice();
+        }
+      }
+    }
+
+    function closeMediaDrawer() {
+      const drawer = document.getElementById('mediaDrawer');
+      drawer.classList.remove('open');
+      document.getElementById('drawerBody').innerHTML = '';
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    }
+
+    function renderExamSheet(data, paper, footer) {
+      examAnswers = {};
+      data.questions.forEach((qObj, idx) => {
+        const block = document.createElement('div');
+        block.className = 'exam-block';
+        if (qObj.options) {
+          const opts = qObj.options.map((o, oIdx) =>
+            `<button class="opt-choice" id="q${idx}-o${oIdx}" onclick="chooseOpt(${idx}, ${oIdx})">${o}</button>`
+          ).join('');
+          block.innerHTML = `<strong>Q${idx + 1}. ${qObj.q}</strong>${opts}`;
+        } else {
+          block.innerHTML = `
+            <strong>Q${idx + 1}. ${qObj.q}</strong>
+            <div style="margin:6px 0; font-weight:700; color:#1d4ed8;">"${qObj.speakTarget}"</div>
+            <button class="mic-check-btn" id="examMic" onclick="verifySpeech('${qObj.speakTarget}', 'examMicFb', 'examMic', true)">
+              🎙️ Tap & Speak Answer
+            </button>
+            <div class="feedback-line" id="examMicFb"></div>
+          `;
+        }
+        paper.appendChild(block);
+      });
+
+      const sub = document.createElement('button');
+      sub.className = 'mic-check-btn';
+      sub.style.width = '100%';
+      sub.textContent = "✅ Submit Checkpoint Exam";
+      sub.onclick = () => checkExam(data);
+      paper.appendChild(sub);
+
+      const res = document.createElement('div');
+      res.className = 'feedback-line';
+      res.id = 'examRes';
+      paper.appendChild(res);
+
+      if (data.type === 'final_exam') {
+        const cert = document.createElement('div');
+        cert.className = 'cert-frame';
+        cert.id = 'certFrame';
+        const icon = userGender === 'female' ? '👩‍🎓' : '👨‍🎓';
+        cert.innerHTML = `
+          <div style="font-size:32px;">${icon} 👑</div>
+          <div style="font-size:11px; font-weight:800; color:#b45309;">SMARTPAGE ROYAL CERTIFICATE</div>
+          <h3 style="margin:4px 0; color:#0f1e36;">Certificate of Fluency</h3>
+          <p style="font-size:12.5px;">Completed the 30-Day Master English Course.</p>
+          <button onclick="window.print()" class="page-btn" style="margin-top:10px;">🖨️ Print / Save Certificate</button>
+        `;
+        paper.appendChild(cert);
+      }
+
+      footer.innerHTML = `
+        <div class="a4-page-num-footer">
+          <span>SmartPage Royal Examination Sheet</span>
+          <span>— Page ${data.page} of 30 —</span>
+        </div>
+      `;
+    }
+
+    function chooseOpt(qIdx, oIdx) {
+      examAnswers[qIdx] = oIdx;
+      document.querySelectorAll(`[id^="q${qIdx}-o"]`).forEach(b => b.classList.remove('selected'));
+      document.getElementById(`q${qIdx}-o${oIdx}`).classList.add('selected');
+    }
+
+    function checkExam(data) {
+      let score = 0;
+      data.questions.forEach((qObj, idx) => {
+        if (qObj.options && examAnswers[idx] === qObj.ans) score++;
+        if (qObj.speakTarget && examAnswers['micOk']) score++;
+      });
+      const out = document.getElementById('examRes');
+      if (score >= 2) {
+        out.style.color = '#16a34a';
+        out.textContent = `🎉 Passed (${score}/3)! Next module unlocked.`;
+        const c = document.getElementById('certFrame');
+        if (c) c.style.display = 'block';
+      } else {
+        out.style.color = '#dc2626';
+        out.textContent = `Score: ${score}/3. Answer all questions & speak into mic to pass.`;
+      }
+    }
+
+    function speakText(text, lang) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = lang;
+      u.rate = 0.92;
+      window.speechSynthesis.speak(u);
+    }
+
+    function playAllPageVoice() {
+      const data = ENGLISH_COURSE_DATA.find(p => p.page === currentPage);
+      if (!data || !data.sentences || !('speechSynthesis' in window)) return;
+      const langMeta = LANG_LABELS[supportLang] || LANG_LABELS.hinglish;
+      window.speechSynthesis.cancel();
+      data.sentences.forEach(s => {
+        const u1 = new SpeechSynthesisUtterance(s.en);
+        u1.lang = 'en-US';
+        const u2 = new SpeechSynthesisUtterance(getSentenceTranslation(s, supportLang));
+        u2.lang = langMeta.voice;
+        window.speechSynthesis.speak(u1);
+        window.speechSynthesis.speak(u2);
+      });
+    }
+
+    function verifySpeech(target, fbId, btnId, isExam = false) {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const fb = document.getElementById(fbId);
+      const btn = document.getElementById(btnId);
+      if (!SR) {
+        fb.style.color = '#16a34a';
+        fb.textContent = "✅ Demo Verified (Use Chrome for live mic)";
+        if (isExam) examAnswers['micOk'] = true;
+        return;
+      }
+      const rec = new SR();
+      rec.lang = 'en-US';
+      btn.classList.add('listening');
+      rec.onresult = (e) => {
+        const spoken = e.results[0][0].transcript.toLowerCase();
+        const words = target.toLowerCase().replace(/[^a-z\s]/g, '').split(' ');
+        const hits = words.filter(w => spoken.includes(w));
+        if (hits.length / words.length >= 0.55) {
+          fb.style.color = '#16a34a';
+          fb.textContent = `✅ Matched! Heard: "${e.results[0][0].transcript}"`;
+          if (isExam) examAnswers['micOk'] = true;
+        } else {
+          fb.style.color = '#ea580c';
+          fb.textContent = `Try again. Heard: "${e.results[0][0].transcript}"`;
+        }
+      };
+      rec.onend = () => btn.classList.remove('listening');
+      rec.start();
+    }
+
+    function changePage(delta) {
+      const n = currentPage + delta;
+      if (n >= 1 && n <= 30) {
+        currentPage = n;
+        renderPage();
+      }
+    }
+
+    function jumpToPage(val) {
+      currentPage = parseInt(val, 10);
+      renderPage();
+    }
+
+    init();
+  </script>
+  <script>
+  /* Bridge: Play Video & Audio uploaded in Admin.html directly inside english-course.html */
+  (async function syncAdminMediaToEnglishCourse() {
+    try {
+      const req = indexedDB.open("SmartPageStudioDB");
+      req.onsuccess = function(e) {
+        const db = e.target.result;
+        const storeNames = Array.from(db.objectStoreNames);
+        if (!storeNames.length) return;
+        const tx = db.transaction(storeNames[0], "readonly");
+        const getReq = tx.objectStore(storeNames[0]).get("spoken_english_30");
+        getReq.onsuccess = function() {
+          const book = getReq.result;
+          if (book && Array.isArray(book.pages)) {
+            window.ADMIN_ENGLISH_PAGES = book.pages;
+          }
+        };
+      };
+    } catch (err) { console.log("Admin Media Sync:", err); }
+  })();
+  </script>
+</body>
+</html>
