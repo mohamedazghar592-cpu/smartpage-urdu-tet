@@ -712,6 +712,7 @@
     function fallbackLocalLoad() {
       let bookObj = null;
       try { bookObj = JSON.parse(localStorage.getItem("smartpage_active_book") || "null"); } catch (e) {}
+localStorage.removeItem("smartpage_active_book"); bookObj = null;
       if (!bookObj) bookObj = window.PUBLISHED_BOOK_DATA || null;
       if (bookObj) applyBookToReader(bookObj);
       else renderPage();
