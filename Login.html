@@ -169,6 +169,19 @@
     border-color: #16a34a;
     background: #f0fdf4;
   }
+  .btn-guest {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid #1e3a8a;
+    border-radius: 10px;
+    background: #eff6ff;
+    color: #1e3a8a;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  .btn-guest:hover { background: #dbeafe; }
   .btn-launch {
     width: 100%;
     background: #16a34a;
@@ -181,6 +194,43 @@
     cursor: pointer;
   }
   .btn-launch:hover { background: #15803d; }
+
+  /* Sample Mode: Single clean Guest Login card without long scroll */
+  body.sample-single-view {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  body.sample-single-view .auth-card {
+    max-width: 440px !important;
+    width: 100% !important;
+    grid-template-columns: 1fr !important;
+    overflow: visible !important;
+  }
+  body.sample-single-view .right-panel {
+    display: none !important;
+  }
+  body.sample-single-view .left-panel {
+    width: 100%;
+    border-right: none;
+    border-radius: 14px;
+    background: #ffffff;
+    padding: 24px;
+    justify-content: flex-start;
+  }
+  body.sample-single-view .left-panel > div:last-child,
+  body.sample-single-view .left-panel p,
+  body.sample-single-view .left-panel .form-group,
+  body.sample-single-view .left-panel .btn-launch {
+    display: none !important;
+  }
+  body.sample-single-view .left-panel .btn-guest {
+    display: block !important;
+    margin-top: 16px !important;
+    margin-bottom: 0 !important;
+  }
 </style>
 </head>
 <body>
@@ -210,6 +260,14 @@
           <option value="ASIA">🇮🇳 India / Asia (INR ₹)</option>
         </select>
       </div>
+
+      <button type="button" class="btn-guest" onclick="guestLogin()">
+        ⚡ Instant Guest Login (Open Library)
+      </button>
+
+      <button type="button" class="btn-launch" onclick="saveProfileAndEnter()">
+        📚 Save & Open Book Library →
+      </button>
     </div>
 
     <div style="font-size:11.5px; color:#64748b; border-top:1px solid #e2e8f0; padding-top:10px;">
@@ -256,8 +314,6 @@
         <div id="priceAi" style="font-size:11.5px; color:#0f172a; font-weight:600;">SAR 149 (2 Pages Free)</div>
       </div>
     </div>
-
-    <button type="button" class="btn-launch" onclick="saveProfileAndEnter()">📚 Save & Open Book Library →</button>
   </div>
 </div>
 
@@ -270,6 +326,9 @@
   let isRecording = false;
 
   window.onload = function() {
+    // Full launch ke waqt neeche wali line ke aage // laga dein taaki poora form + studio dikhe
+    document.body.classList.add("sample-single-view");
+
     try {
       const saved = JSON.parse(localStorage.getItem("smartpage_user_profile") || "null");
       if (saved) {
@@ -374,6 +433,20 @@
       btn.classList.remove("recording");
       btn.innerText = "🎙️ Re-record Sample";
     }
+  }
+
+  function guestLogin() {
+    const profile = {
+      name: "Guest Learner",
+      contact: "",
+      region: document.getElementById("userRegion") ? document.getElementById("userRegion").value : "GCC",
+      plan: "omf",
+      avatar: "",
+      voiceSample: ""
+    };
+    localStorage.setItem("smartpage_user_profile", JSON.stringify(profile));
+    localStorage.setItem("omf_guest_mode", "true");
+    window.location.href = "Library.html";
   }
 
   function saveProfileAndEnter() {
